@@ -50,7 +50,7 @@ def para_estimate(y,PHI,Lambda=0,method='LS'):
     if method == 'LS':
         return np.dot(np.dot(np.linalg.inv(np.dot(PHI,T(PHI))),PHI),y)
 
-# Generate Plots
+# Generate Plots with
 def plot_f_s(x,y,sampx,sampy,label):
     plt.plot(x, y, label=label)
     plt.legend()
