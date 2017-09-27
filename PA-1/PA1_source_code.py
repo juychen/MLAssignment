@@ -55,15 +55,19 @@ def para_estimate(y,PHI,Lambda=0,method='LS'):
         return np.dot(np.dot(np.linalg.inv(np.dot(PHI,T(PHI))+Lambda*np.eye(PHI.shape[0])),PHI),y)
 
 # define posterior of Bayesian Regression
-def posterior_BR(x,y,PHI,alpha=0,sigma=0):
-    SIGMA_theta = np.linalg.inv(1/(sigma*sigma)*np.dot(PHI,T(PHI)+1/alpha*np.eye(PHI.shape[0])))
-    MIU_theta = 1/(sigma*sigma)*np.dot(np.dot(SIGMA_theta,PHI,y)) 
-    posterior = multivariate_normal(x,MIU_theta,SIGMA_theta)
-    return posterior,MIU_theta,SIGMA_theta
+def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
+    SIGMA_theta = np.linalg.inv(1/alpha*np.eye(PHI.shape[0])+1/(sigma*sigma)*np.dot(PHI,T(PHI)))
+    miu_theta = 1/(sigma*sigma)*np.dot(np.dot(SIGMA_theta,PHI),y) 
+    #posterior = multivariate_normal(x,miu_theta,SIGMA_theta)
+    return miu_theta,SIGMA_theta
 
-def predict_BR(x,MIU_theta,SIGMA_theta):
+def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 
-    return
+    if(function=='poly'):
+        PHIX = PHIx(x,order=miu_theta.shape[0]-1,function=function)
+        miu_star = np.dot(T(PHIX),miu_theta)
+        sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
+        return miu_star,sigma_theta_sqr
 
 # Generate Plots with
 def plot_f_s(x,y,sampx,sampy,label):
@@ -89,13 +93,19 @@ def main():
     sampx = load_file(filename = 'polydata_data_sampx.txt')
     sampy = load_file(filename = 'polydata_data_sampy.txt')
 
-    theta_LS = para_estimate(sampy,PHIx(sampx,order=5,function='poly'),method='LS')
+    PHIX = PHIx(sampx,order=5,function='poly')
+
+    theta_LS = para_estimate(sampy,PHIX,method='LS')
     prediction_LS = predict(polyx,theta_LS,function='poly')
     plot_f_s(polyx,prediction_LS,sampx,sampy,label='Least-squares Regression')
 
-    theta_RLS = para_estimate(sampy,PHIx(sampx,order=5,function='poly'),Lambda=1,method='RLS')
+    theta_RLS = para_estimate(sampy,PHIX,Lambda=1,method='RLS')
     prediction_RLS = predict(polyx,theta_RLS,function='poly')
     plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LS Regression')
+
+    miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
+    miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
+    plot_f_s(polyx,miu_star,sampx,sampy,label='Bayesian Regression')
 
     # my code here
 
