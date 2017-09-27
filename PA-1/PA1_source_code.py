@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import math as m
 import matplotlib.pyplot as plt
+import cvxopt
+from scipy.stats import multivariate_normal
 
 # cd D:\\OneDrive\\文档\\cityu\\MachineLearning\\MLAssignment\\PA-1\\PA-1-data-text
 
@@ -49,6 +51,8 @@ def predict(x,theta,function='poly'):
 def para_estimate(y,PHI,Lambda=0,method='LS'):
     if method == 'LS':
         return np.dot(np.dot(np.linalg.inv(np.dot(PHI,T(PHI))),PHI),y)
+    if method == 'RLS':
+        return np.dot(np.dot(np.linalg.inv(np.dot(PHI,T(PHI))+Lambda*np.eye(PHI.shape[0])),PHI),y)
 
 # Generate Plots with
 def plot_f_s(x,y,sampx,sampy,label):
