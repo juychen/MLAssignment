@@ -78,6 +78,15 @@ def plot_f_s(x,y,sampx,sampy,label):
     plt.show()
     return 
 
+def plot_f_s_std(x,y,sampx,sampy,deviation,label):
+    plt.plot(x, y, label=label)
+    plt.legend()
+    plt.plot(sampx, sampy,'ro',label='data')
+    plt.legend()
+    plt.errorbar(x, y, deviation, linestyle='None', marker='^')
+    plt.show()
+    return
+
 # Experimen of LS
 def expriment_LS():
     polyx = load_file(filename = 'polydata_data_polyx.txt')
@@ -105,7 +114,7 @@ def main():
 
     miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
     miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
-    plot_f_s(polyx,miu_star,sampx,sampy,label='Bayesian Regression')
+    plot_f_s_std(polyx,miu_star,sampx,sampy,np.sqrt(sigma_thea_sqr.diagonal()),label='Bayesian Regression')
 
     # my code here
 
