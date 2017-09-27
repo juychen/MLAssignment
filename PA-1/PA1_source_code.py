@@ -25,7 +25,7 @@ def T(x):
 # x is a set of column vectors, get the transpose form of Φ matrix
 def PHIx(x,order=1,function='poly'):
     if(function == 'poly'):
-        mat = [poly_functionT(item,order) for item in x ]
+        mat = [poly_function(item,order) for item in x ]
         #return np.transpose(np.array(mat))
         return T(np.array(mat))
 
@@ -54,6 +54,17 @@ def para_estimate(y,PHI,Lambda=0,method='LS'):
     if method == 'RLS':
         return np.dot(np.dot(np.linalg.inv(np.dot(PHI,T(PHI))+Lambda*np.eye(PHI.shape[0])),PHI),y)
 
+# define posterior of Bayesian Regression
+def posterior_BR(x,y,PHI,alpha=0,sigma=0):
+    SIGMA_theta = np.linalg.inv(1/(sigma*sigma)*np.dot(PHI,T(PHI)+1/alpha*np.eye(PHI.shape[0])))
+    MIU_theta = 1/(sigma*sigma)*np.dot(np.dot(SIGMA_theta,PHI,y)) 
+    posterior = multivariate_normal(x,MIU_theta,SIGMA_theta)
+    return posterior,MIU_theta,SIGMA_theta
+
+def predict_BR(x,MIU_theta,SIGMA_theta):
+
+    return
+
 # Generate Plots with
 def plot_f_s(x,y,sampx,sampy,label):
     plt.plot(x, y, label=label)
@@ -63,7 +74,29 @@ def plot_f_s(x,y,sampx,sampy,label):
     plt.show()
     return 
 
+# Experimen of LS
+def expriment_LS():
+    polyx = load_file(filename = 'polydata_data_polyx.txt')
+    polyy = load_file(filename = 'polydata_data_polyy.txt')
+    sampx = load_file(filename = 'polydata_data_sampx.txt')
+    sampy = load_file(filename = 'polydata_data_sampy.txt')
+
+    return
+
 def main():
+    polyx = load_file(filename = 'polydata_data_polyx.txt')
+    polyy = load_file(filename = 'polydata_data_polyy.txt')
+    sampx = load_file(filename = 'polydata_data_sampx.txt')
+    sampy = load_file(filename = 'polydata_data_sampy.txt')
+
+    theta_LS = para_estimate(sampy,PHIx(sampx,order=5,function='poly'),method='LS')
+    prediction_LS = predict(polyx,theta_LS,function='poly')
+    plot_f_s(polyx,prediction_LS,sampx,sampy,label='Least-squares Regression')
+
+    theta_RLS = para_estimate(sampy,PHIx(sampx,order=5,function='poly'),Lambda=1,method='RLS')
+    prediction_RLS = predict(polyx,theta_RLS,function='poly')
+    plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LS Regression')
+
     # my code here
 
 if __name__ == "__main__":
