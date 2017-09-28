@@ -60,14 +60,14 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
         H = np.vstack((np.hstack((PHIPHIT,-1*PHIPHIT)),
                        np.hstack((-1*PHIPHIT,PHIPHIT))))
         
-        f = np.vstack((PHIy,-1*PHIy))
+        f = np.hstack((PHIy,-1*PHIy))
         f = Lambda * np.ones(f.shape) - f
 
         from cvxopt import matrix
         from cvxopt import solvers
 
         P = matrix(H)
-        q = matrix(q)
+        q = matrix(f)
         G = matrix([-1])
         h = matrix([0])
         
@@ -137,7 +137,7 @@ def main():
 
     theta_LASSO = para_estimate(sampy,PHIX,Lambda=0.1,method='LASSO')
     prediction_LASSO = predict(polyx,theta_LASSO,function='poly')
-    plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LS Regression')
+    plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LASSO Regression')
 
     miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
     miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
