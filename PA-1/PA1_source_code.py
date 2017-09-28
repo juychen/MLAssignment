@@ -48,11 +48,34 @@ def predict(x,theta,function='poly'):
         return predections
 
 # parameter estimate , all input vectors are column vectors
-def para_estimate(y,PHI,Lambda=0,method='LS'):
+def para_estimate(y,PHI,Lambda=0.1,method='LS'):
     if method == 'LS':
         return np.dot(np.dot(np.linalg.inv(np.dot(PHI,T(PHI))),PHI),y)
     if method == 'RLS':
         return np.dot(np.dot(np.linalg.inv(np.dot(PHI,T(PHI))+Lambda*np.eye(PHI.shape[0])),PHI),y)
+    if method == 'LASSO':
+        PHIPHIT = np.dot(PHI,T(PHI))
+        PHIy = np.dot(PHI,y)
+
+        H = np.vstack((np.hstack((PHIPHIT,-1*PHIPHIT)),
+                       np.hstack((-1*PHIPHIT,PHIPHIT))))
+        
+        f = np.vstack((PHIy,-1*PHIy))
+        f = Lambda * np.ones(f.shape) - f
+
+        from cvxopt import matrix
+        from cvxopt import solvers
+
+        P = matrix(H)
+        q = matrix(q)
+        G = matrix([-1])
+        h = matrix([0])
+        
+        sol = solvers.qp(P,q,G,h)
+        x = sol['x']
+        theta = x[:int(len(x)/2)]- x[int(len(x)/2):]
+
+        return theta
 
 # define posterior of Bayesian Regression
 def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
@@ -110,6 +133,10 @@ def main():
 
     theta_RLS = para_estimate(sampy,PHIX,Lambda=1,method='RLS')
     prediction_RLS = predict(polyx,theta_RLS,function='poly')
+    plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LS Regression')
+
+    theta_LASSO = para_estimate(sampy,PHIX,Lambda=0.1,method='LASSO')
+    prediction_LASSO = predict(polyx,theta_LASSO,function='poly')
     plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LS Regression')
 
     miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
