@@ -15,6 +15,15 @@ def poly_function(x,order = 1):
 def load_file(filename = 'polydata_data_polyx.txt'):
     return np.genfromtxt(filename,dtype='double')
 
+def load_dataset():
+    polyx = load_file(filename = 'polydata_data_polyx.txt')
+    polyy = load_file(filename = 'polydata_data_polyy.txt')
+    sampx = load_file(filename = 'polydata_data_sampx.txt')
+    sampy = load_file(filename = 'polydata_data_sampy.txt')
+    PHIX = PHIx(sampx,order=5,function='poly')
+
+    return polyx,polyy,sampx,sampy,PHIX
+
 # transpose 
 def T(x):
     if(len(x.shape)>1):
@@ -68,14 +77,14 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
 
         P = matrix(H)
         q = matrix(f)
-        G = matrix([-1])
-        h = matrix([0])
+        G = matrix(np.eye(len(f))*-1)
+        h = matrix(np.zeros(len(f)))
         
         sol = solvers.qp(P,q,G,h)
         x = sol['x']
         theta = x[:int(len(x)/2)]- x[int(len(x)/2):]
 
-        return theta
+        return np.array(theta)
 
 # define posterior of Bayesian Regression
 def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
@@ -127,17 +136,19 @@ def main():
 
     PHIX = PHIx(sampx,order=5,function='poly')
 
+    polyx,polyy,sampx,sampy,PHIX = load_dataset()
+
     theta_LS = para_estimate(sampy,PHIX,method='LS')
     prediction_LS = predict(polyx,theta_LS,function='poly')
     plot_f_s(polyx,prediction_LS,sampx,sampy,label='Least-squares Regression')
 
-    theta_RLS = para_estimate(sampy,PHIX,Lambda=1,method='RLS')
+    theta_RLS = para_estimate(sampy,PHIX,Lambda=0.1,method='RLS')
     prediction_RLS = predict(polyx,theta_RLS,function='poly')
     plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LS Regression')
 
     theta_LASSO = para_estimate(sampy,PHIX,Lambda=0.1,method='LASSO')
     prediction_LASSO = predict(polyx,theta_LASSO,function='poly')
-    plot_f_s(polyx,prediction_RLS,sampx,sampy,label='Regularize LASSO Regression')
+    plot_f_s(polyx,prediction_LASSO,sampx,sampy,label='Regularize LASSO Regression')
 
     miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
     miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
