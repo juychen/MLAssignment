@@ -85,6 +85,26 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
         theta = x[:int(len(x)/2)]- x[int(len(x)/2):]
 
         return np.array(theta)
+    if method == 'RR':
+
+        from cvxopt import matrix
+        from cvxopt import solvers
+
+        A = np.vstack((np.hstack((-1*T(PHI),-1*np.eye(T(PHI).shape[0]))),
+                       np.hstack((T(PHI),-1*np.eye(T(PHI).shape[0])))))
+        b = np.hstack((-1*y,
+                       y))
+
+        f = np.hstack((np.zeros(T(PHI).shape[1]),
+                       np.ones(T(PHI).shape[0])))
+
+        c = matrix(f)
+        A = matrix(A)
+        b = matrix(b)
+
+        sol = solvers.lp(c,A,b)
+
+        return 
 
 # define posterior of Bayesian Regression
 def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
