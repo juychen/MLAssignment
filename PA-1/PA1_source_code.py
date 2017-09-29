@@ -136,7 +136,7 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.legend()  
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
- #   plt.errorbar(x, pred, deviation)
+    plt.errorbar(x, pred,yerr = deviation,marker='s',fmt='-o')
     plt.show()
     return
 
@@ -145,7 +145,8 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_tit
     if (method == 'BR'):
             miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
             miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
-            plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(sigma_thea_sqr.diagonal()),label=plot_title)
+      #      plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(np.sqrt(sigma_thea_sqr.diagonal())),label=plot_title)
+            plot_f_s(polyx,polyy,miu_star,sampx,sampy,label=plot_title)
             return miu_theta,SIGMA_theta, miu_star,sigma_thea_sqr
 
     theta = para_estimate(sampy,PHIX,method=method)
@@ -166,11 +167,8 @@ def main():
 
     experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='RR',plot_title='Robust Regression')
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='BR',plot_title='Bayesian Regression')
+    miu_theta,SIGMA_theta, miu_star,sigma_thea_sqr = experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='BR',plot_title='Bayesian Regression')
     # my code here
 
 if __name__ == "__main__":
     main()
-
-
-
