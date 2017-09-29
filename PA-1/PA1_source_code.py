@@ -146,13 +146,13 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_tit
             miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
             miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
             plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(sigma_thea_sqr.diagonal()),label=plot_title)
-            return 
+            return miu_theta,SIGMA_theta, miu_star,sigma_thea_sqr
 
     theta = para_estimate(sampy,PHIX,method=method)
     prediction = predict(polyx,theta,function=function)
     plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
 
-    return 
+    return theta, prediction
 
 def main():
 
