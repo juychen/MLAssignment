@@ -4,6 +4,8 @@ import math as m
 import matplotlib.pyplot as plt
 import cvxopt
 from scipy.stats import multivariate_normal
+from cvxopt import matrix
+from cvxopt import solvers
 
 # cd D:\\OneDrive\\文档\\cityu\\MachineLearning\\MLAssignment\\PA-1\\PA-1-data-text
 
@@ -72,9 +74,6 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
         f = np.hstack((PHIy,-1*PHIy))
         f = Lambda * np.ones(f.shape) - f
 
-        from cvxopt import matrix
-        from cvxopt import solvers
-
         P = matrix(H)
         q = matrix(f)
         G = matrix(np.eye(len(f))*-1)
@@ -86,9 +85,6 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
 
         return np.array(theta)
     if method == 'RR':
-
-        from cvxopt import matrix
-        from cvxopt import solvers
 
         A = np.vstack((np.hstack((-1*T(PHI),-1*np.eye(T(PHI).shape[0]))),
                        np.hstack((T(PHI),-1*np.eye(T(PHI).shape[0])))))
