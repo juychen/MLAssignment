@@ -136,34 +136,37 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.legend()  
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
-    plt.errorbar(x, y, deviation, linestyle='None', marker='^')
+ #   plt.errorbar(x, pred, deviation)
     plt.show()
     return
+
+def experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_title='Least-squares Regression'):
+    
+    if (method == 'BR'):
+            miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
+            miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
+            plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(sigma_thea_sqr.diagonal()),label=plot_title)
+            return 
+
+    theta = para_estimate(sampy,PHIX,method=method)
+    prediction = predict(polyx,theta,function=function)
+    plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
+
+    return 
 
 def main():
 
     polyx,polyy,sampx,sampy,PHIX = load_dataset()
 
-    theta_LS = para_estimate(sampy,PHIX,method='LS')
-    prediction_LS = predict(polyx,theta_LS,function='poly')
-    plot_f_s(polyx,polyy,prediction_LS,sampx,sampy,label='Least-squares Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_title='Least-squares Regression')
 
-    theta_RLS = para_estimate(sampy,PHIX,Lambda=0.1,method='RLS')
-    prediction_RLS = predict(polyx,theta_RLS,function='poly')
-    plot_f_s(polyx,polyy,prediction_RLS,sampx,sampy,label='Regularize LS Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='RLS',plot_title='Regularize LS Regression')
 
-    theta_LASSO = para_estimate(sampy,PHIX,Lambda=0.1,method='LASSO')
-    prediction_LASSO = predict(polyx,theta_LASSO,function='poly')
-    plot_f_s(polyx,polyy,prediction_LASSO,sampx,sampy,label='Regularize LASSO Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LASSO',plot_title='Regularize LASSO Regression')
 
-    theta_RR = para_estimate(sampy,PHIX,method='RR')
-    prediction_RR = predict(polyx,theta_RR,function='poly')
-    plot_f_s(polyx,polyy,prediction_RR,sampx,sampy,label='Robust Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='RR',plot_title='Robust Regression')
 
-    miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
-    miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
-    plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(sigma_thea_sqr.diagonal()),label='Bayesian Regression')
-
+    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='BR',plot_title='Bayesian Regression')
     # my code here
 
 if __name__ == "__main__":
