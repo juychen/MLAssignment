@@ -136,12 +136,6 @@ def plot_f_s_std(x,y,sampx,sampy,deviation,label):
     return
 
 def main():
-    #polyx = load_file(filename = 'polydata_data_polyx.txt')
-    #polyy = load_file(filename = 'polydata_data_polyy.txt')
-    #sampx = load_file(filename = 'polydata_data_sampx.txt')
-    #sampy = load_file(filename = 'polydata_data_sampy.txt')
-
-    #PHIX = PHIx(sampx,order=5,function='poly')
 
     polyx,polyy,sampx,sampy,PHIX = load_dataset()
 
