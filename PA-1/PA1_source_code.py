@@ -147,12 +147,15 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
 
 def experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_title='Least-squares Regression'):
     
+    prediction= np.array([])
+    theta = np.array([])
+
     if (method == 'BR'):
             miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
-            miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
-            plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(np.sqrt(sigma_thea_sqr.diagonal())),label=plot_title)
+            prediction,cov = predict_BR(polyx,miu_theta,SIGMA_theta)
+            plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
             #plot_f_s(polyx,polyy,miu_star,sampx,sampy,label=plot_title)
-            return miu_theta,SIGMA_theta, miu_star,sigma_thea_sqr
+            return miu_theta,SIGMA_theta, prediction,cov
 
     theta = para_estimate(sampy,PHIX,method=method)
     prediction = predict(polyx,theta,function=function)
