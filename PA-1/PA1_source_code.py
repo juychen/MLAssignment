@@ -103,6 +103,11 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
         theta = np.array(sol['x'][:T(PHI).shape[1]])
         return theta
 
+# define mean square error
+def mse(y,predction):
+    e = y - predction
+    return np.dot(T(e),e)/len(e)
+
 # define posterior of Bayesian Regression
 def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
     SIGMA_theta = np.linalg.inv(1/alpha*np.eye(PHI.shape[0])+1/(sigma*sigma)*np.dot(PHI,T(PHI)))
@@ -145,8 +150,8 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_tit
     if (method == 'BR'):
             miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
             miu_star,sigma_thea_sqr = predict_BR(polyx,miu_theta,SIGMA_theta)
-      #      plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(np.sqrt(sigma_thea_sqr.diagonal())),label=plot_title)
-            plot_f_s(polyx,polyy,miu_star,sampx,sampy,label=plot_title)
+            plot_f_s_std(polyx,polyy,miu_star,sampx,sampy,np.sqrt(np.sqrt(sigma_thea_sqr.diagonal())),label=plot_title)
+            #plot_f_s(polyx,polyy,miu_star,sampx,sampy,label=plot_title)
             return miu_theta,SIGMA_theta, miu_star,sigma_thea_sqr
 
     theta = para_estimate(sampy,PHIX,method=method)
