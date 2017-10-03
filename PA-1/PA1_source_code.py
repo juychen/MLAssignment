@@ -112,7 +112,7 @@ def mse(y,predction):
     ry =  y.reshape(len(y),1)
     rp = predction.reshape(len(predction),1)
     e = ry - rp
-    return np.dot(T(e),e)/len(e)
+    return (np.dot(T(e),e)/len(e))[0,0]
 
 # define posterior of Bayesian Regression
 def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
@@ -140,6 +140,7 @@ def plot_f_s(x,y,pred,sampx,sampy,label):
     plt.show()
     return 
 
+# model_selection
 def model_selection(polyx,polyy,sampx,sampy,PHIX,param_dict,estimator='RLS'):
     opt_para={}
     min_err = m.inf
@@ -167,8 +168,9 @@ def model_selection(polyx,polyy,sampx,sampy,PHIX,param_dict,estimator='RLS'):
                      prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=function)
                      err = mse(prediction,polyy)
                      opt_para[function,alpha,sigma] = err
-
-    return opt_para
+    
+    best = min(opt_para, key=d.get)
+    return opt_para,best
 
 def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.plot(x, y, label='True Function',c='k')
