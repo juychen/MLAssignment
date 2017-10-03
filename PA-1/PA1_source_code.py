@@ -35,7 +35,7 @@ def T(x):
         return x.reshape(1,x.shape[0])
 
 # x is a set of column vectors, get the transpose form of Φ matrix
-def PHIx(x,order=1,function='poly'):
+def PHIx(x,order=5,function='poly'):
     if(function == 'poly'):
         mat = [poly_function(item,order) for item in x ]
         #return np.transpose(np.array(mat))
@@ -142,7 +142,7 @@ def plot_f_s(x,y,pred,sampx,sampy,label):
     return 
 
 # model_selection
-def model_selection(polyx,polyy,sampx,sampy,PHIX,param_dict,estimator='RLS'):
+def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     opt_para={}
     min_err = m.inf
 
@@ -151,6 +151,9 @@ def model_selection(polyx,polyy,sampx,sampy,PHIX,param_dict,estimator='RLS'):
         functions = param_dict['function']
 
         for function in functions:
+            
+            PHIX = PHIx(sampx,order=param_dict['order'],function=param_dict['function'])
+
             for Lambda in Lambdas:
                     theta = para_estimate(sampy,PHIX,Lambda=Lambda,method=estimator)
                     prediction = predict(polyx,theta,function=function)
@@ -163,6 +166,8 @@ def model_selection(polyx,polyy,sampx,sampy,PHIX,param_dict,estimator='RLS'):
         functions = param_dict['function']
 
         for function in functions:
+            PHIX = PHIx(sampx,order=param_dict['order'],function=param_dict['function'])
+
             for alpha in alphas:
                 for sigma in sigmas:
                      theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=alpha,sigma=sigma)
@@ -184,17 +189,24 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.show()
     return
 
-def learning_curve(polyx,polyy,sampx,sampy,PHIX,paradict={},subset=[1],function='poly',method='LS',plot_title='Learning Curve'):
+def learning_curve(polyx,polyy,sampx,sampy,PHIX,paradict={},subset=[1],method='LS',plot_title='Learning Curve'):
     
     for size in subset:
         nsamp = size*len(sampy)
         resampx, resampy = resample(sampx, sampy,n_samples=nsamp, random_state=0)
-        if()
+        # if parameter dictionnary is not empty
+        if(paradict):
+            rePHIX = PHIx(resampx,order=paradict['order'],function=paradict['function'])
+        else :
+            rePHIX = PHIx(resampx)
+
+        if(method == 'BR'):
+            experiment(polyx,polyy,resampx,resampy,rePHIX,paradict)
 
     
     return 0
 
-def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},method='LS',plot_title='Least-squares Regression'):
+def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression'):
     
     prediction= np.array([])
     theta = np.array([])
@@ -204,6 +216,7 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},method='LS',plot_title='
 
         try:
             if (method == 'BR'):
+                PHIX = PHIx(sampx,order=paradict['order'],function=paradict['function'])
                 theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=paradict['alpha'],sigma=paradict['sigma'])
                 prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=paradict['function'])
                 plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
@@ -211,6 +224,7 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},method='LS',plot_title='
 
 
             else:
+                PHIX = PHIx(sampx,order=paradict['order'],function=paradict['function'])
                 theta = para_estimate(sampy,PHIX,Lambda=paradict['Lambda'],method=method)
                 prediction = predict(polyx,theta,function=paradict['function'])
                 plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title) 
@@ -223,11 +237,13 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},method='LS',plot_title='
 
     # parameter is empty
     if (method == 'BR'):
+            PHIX = PHIx(sampx)
             theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
             prediction,cov = predict_BR(polyx,theta,SIGMA_theta)
             plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
             return theta,SIGMA_theta, prediction,cov
 
+    PHIX = PHIx(sampx)
     theta = para_estimate(sampy,PHIX,method=method)
     prediction = predict(polyx,theta)
     plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
@@ -238,15 +254,15 @@ def main():
 
     polyx,polyy,sampx,sampy,PHIX = load_dataset()
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,method='LS',plot_title='Least-squares Regression')
+    experiment(polyx,polyy,sampx,sampy,method='LS',plot_title='Least-squares Regression')
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,method='RLS',plot_title='Regularize LS Regression')
+    experiment(polyx,polyy,sampx,sampy,method='RLS',plot_title='Regularize LS Regression')
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,method='LASSO',plot_title='Regularize LASSO Regression')
+    experiment(polyx,polyy,sampx,sampy,method='LASSO',plot_title='Regularize LASSO Regression')
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,method='RR',plot_title='Robust Regression')
+    experiment(polyx,polyy,sampx,sampy,method='RR',plot_title='Robust Regression')
 
-    theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,sampx,sampy,PHIX,method='BR',plot_title='Bayesian Regression')
+    theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,sampx,sampy,method='BR',plot_title='Bayesian Regression')
     # my code here
 
 if __name__ == "__main__":
