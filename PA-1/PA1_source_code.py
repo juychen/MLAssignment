@@ -105,7 +105,13 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
 
 # define mean square error
 def mse(y,predction):
-    e = y - predction
+
+    if(len(y)!=len(predction)):
+        return m.inf
+
+    ry =  y.reshape(len(y),1)
+    rp = predction.reshape(len(predction),1)
+    e = ry - rp
     return np.dot(T(e),e)/len(e)
 
 # define posterior of Bayesian Regression
@@ -134,6 +140,36 @@ def plot_f_s(x,y,pred,sampx,sampy,label):
     plt.show()
     return 
 
+def model_selection(polyx,polyy,sampx,sampy,PHIX,param_dict,estimator='RLS'):
+    opt_para={}
+    min_err = m.inf
+
+    if (estimator == 'RLS' or estimator == 'LASSO'):
+        Lambdas = param_dict['Lambda']
+        functions = param_dict['function']
+
+        for function in functions:
+            for Lambda in Lambdas:
+                    theta = para_estimate(sampy,PHIX,Lambda=Lambda,method=estimator)
+                    prediction = predict(polyx,theta,function=function)
+                    err = mse(prediction,polyy)
+                    opt_para[function,Lambda] = err
+    
+    if (estimator == 'BR'):
+        alphas = param_dict['alpha']
+        sigmas = param_dict['sigma']
+        functions = param_dict['function']
+
+        for function in functions:
+            for alpha in alphas:
+                for sigma in sigmas:
+                     theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=alpha,sigma=sigma)
+                     prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=function)
+                     err = mse(prediction,polyy)
+                     opt_para[function,alpha,sigma] = err
+
+    return opt_para
+
 def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
@@ -151,11 +187,10 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_tit
     theta = np.array([])
 
     if (method == 'BR'):
-            miu_theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
-            prediction,cov = predict_BR(polyx,miu_theta,SIGMA_theta)
+            theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
+            prediction,cov = predict_BR(polyx,theta,SIGMA_theta)
             plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
-            #plot_f_s(polyx,polyy,miu_star,sampx,sampy,label=plot_title)
-            return miu_theta,SIGMA_theta, prediction,cov
+            return theta,SIGMA_theta, prediction,cov
 
     theta = para_estimate(sampy,PHIX,method=method)
     prediction = predict(polyx,theta,function=function)
@@ -175,7 +210,7 @@ def main():
 
     experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='RR',plot_title='Robust Regression')
 
-    miu_theta,SIGMA_theta, miu_star,sigma_thea_sqr = experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='BR',plot_title='Bayesian Regression')
+    theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='BR',plot_title='Bayesian Regression')
     # my code here
 
 if __name__ == "__main__":
