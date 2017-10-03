@@ -121,6 +121,7 @@ def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
     #posterior = multivariate_normal(x,miu_theta,SIGMA_theta)
     return miu_theta,SIGMA_theta
 
+# define predictive model of Bayesan Regression
 def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 
     if(function=='poly'):
@@ -129,7 +130,7 @@ def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
         sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
         return miu_star,sigma_theta_sqr
 
-# Generate Plots with
+# Generate Plots 
 def plot_f_s(x,y,pred,sampx,sampy,label):
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
@@ -140,7 +141,18 @@ def plot_f_s(x,y,pred,sampx,sampy,label):
     plt.show()
     return 
 
-# model_selection
+def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
+    plt.plot(x, y, label='True Function',c='k')
+    plt.legend()
+    plt.plot(x, pred, label=label,c='b')  
+    plt.legend()  
+    plt.plot(sampx, sampy,'ro',label='data')
+    plt.legend()
+    plt.errorbar(x, pred,yerr = deviation)
+    plt.show()
+    return
+
+# model selection to search the best parameter 
 def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     opt_para={}
     min_err = m.inf
@@ -177,17 +189,7 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     best = min(opt_para, key=d.get)
     return opt_para,best
 
-def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
-    plt.plot(x, y, label='True Function',c='k')
-    plt.legend()
-    plt.plot(x, pred, label=label,c='b')  
-    plt.legend()  
-    plt.plot(sampx, sampy,'ro',label='data')
-    plt.legend()
-    plt.errorbar(x, pred,yerr = deviation)
-    plt.show()
-    return
-
+# Plot learning curve with different data size
 def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve'):
     err = []
     for size in subset:
@@ -210,6 +212,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
 
     return err
 
+# Define experiment with certain method and data
 def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression'):
     
     prediction= np.array([])
@@ -254,6 +257,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
 
     return theta, prediction
 
+# Set experiments with outliers
 def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS',plot_title='Least-squares Regression'):
 
     addedx = np.hstack((sampx,olx))
