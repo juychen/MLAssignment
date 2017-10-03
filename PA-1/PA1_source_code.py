@@ -185,23 +185,25 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.legend()  
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
-    plt.errorbar(x, pred,yerr = deviation,marker='s',fmt='-o')
+    plt.errorbar(x, pred,yerr = deviation)
     plt.show()
     return
 
-def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],method='LS',plot_title='Learning Curve'):
+def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve'):
     err = []
     for size in subset:
         nsamp = int(size*len(sampy))
-        resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=0)
-        # if parameter dictionnary is not empty
-        if method == 'BR':
-            theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
-        
-        else :
-            theta, prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
-        
-        err.append(mse(polyy,prediction))
+        err_perround = 0
+        for i in range(0,repeat):
+            resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i)
+            # if parameter dictionnary is not empty
+            if method == 'BR':
+                theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
+            else :
+                theta, prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
+            err_perround += mse(polyy,prediction)
+                
+        err.append(err_perround/repeat)
 
     plt.plot(subset, err, label='Leaning Curve',c='b')
     plt.legend()
@@ -257,7 +259,7 @@ def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS'
 
     addedx = np.hstack((sampx,olx))
     addedy = np.hstack((sampy,oly))
-    
+
     return experiment(polyx,polyy,addedx,addedy,paradict=paradict,method=method,plot_title=plot_title)
 
 def main():
