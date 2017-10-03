@@ -3,6 +3,7 @@ import pandas as pd
 import math as m
 import matplotlib.pyplot as plt
 import cvxopt
+import os
 from scipy.stats import multivariate_normal
 from sklearn.utils import resample
 from cvxopt import matrix
@@ -19,10 +20,10 @@ def load_file(filename = 'polydata_data_polyx.txt'):
     return np.genfromtxt(filename,dtype='double')
 
 def load_dataset():
-    polyx = load_file(filename = 'polydata_data_polyx.txt')
-    polyy = load_file(filename = 'polydata_data_polyy.txt')
-    sampx = load_file(filename = 'polydata_data_sampx.txt')
-    sampy = load_file(filename = 'polydata_data_sampy.txt')
+    polyx = load_file(filename = os.path.join('PA-1','PA-1-data-text','polydata_data_polyx.txt'))
+    polyy = load_file(filename = os.path.join('PA-1','PA-1-data-text','polydata_data_polyy.txt'))
+    sampx = load_file(filename = os.path.join('PA-1','PA-1-data-text','polydata_data_sampx.txt'))
+    sampy = load_file(filename = os.path.join('PA-1','PA-1-data-text','polydata_data_sampy.txt'))
 
     return polyx,polyy,sampx,sampy
 
@@ -155,6 +156,7 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
 # model selection to search the best parameter 
 def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     opt_para={}
+    best_para={}
     min_err = m.inf
 
     if (estimator == 'RLS' or estimator == 'LASSO'):
