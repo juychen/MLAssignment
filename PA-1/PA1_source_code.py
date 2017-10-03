@@ -203,6 +203,10 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],method='LS',pl
         
         err.append(mse(polyy,prediction))
 
+    plt.plot(subset, err, label='Leaning Curve',c='b')
+    plt.legend()
+    plt.show()
+
     return err
 
 def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression'):
