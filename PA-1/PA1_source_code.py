@@ -9,7 +9,7 @@ from sklearn.utils import resample
 from cvxopt import matrix
 from cvxopt import solvers
 
-# cd D:\\OneDrive\\文档\\cityu\\MachineLearning\\MLAssignment\\PA-1\\PA-1-data-text
+# cd D:\\OneDrive\\文档\\cityu\\MachineLearning\\MLAssignment\\
 
 # define the polynomial function
 def poly_function(x,order = 1):
@@ -105,13 +105,13 @@ def para_estimate(y,PHI,Lambda=0.1,method='LS'):
         return theta
 
 # define mean square error
-def mse(y,predction):
+def mse(y,prediction):
 
-    if(len(y)!=len(predction)):
+    if(len(y)!=len(prediction)):
         return m.inf
 
     ry =  y.reshape(len(y),1)
-    rp = predction.reshape(len(predction),1)
+    rp = prediction.reshape(len(prediction),1)
     e = ry - rp
     return (np.dot(T(e),e)/len(e))[0,0]
 
@@ -167,7 +167,7 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
 
         for function in functions:
             
-            PHIX = PHIx(sampx,order=param_dict['order'],function=param_dict['function'])
+            PHIX = PHIx(sampx,order=int(param_dict['order']),function=function)
 
             for Lambda in Lambdas:
                     theta = para_estimate(sampy,PHIX,Lambda=Lambda,method=estimator)
@@ -181,7 +181,7 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
         functions = param_dict['function']
 
         for function in functions:
-            PHIX = PHIx(sampx,order=param_dict['order'],function=param_dict['function'])
+            PHIX = PHIx(sampx,order=int(param_dict['order']),function=function)
 
             for alpha in alphas:
                 for sigma in sigmas:
@@ -190,7 +190,7 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
                      err = mse(prediction,polyy)
                      opt_para[function,alpha,sigma] = err
     
-    best = min(opt_para, key=d.get)
+    best = min(opt_para, key=opt_para.get)
     return opt_para,best
 
 # Plot learning curve with different data size
@@ -275,13 +275,18 @@ def main():
 
     experiment(polyx,polyy,sampx,sampy,method='LS',plot_title='Least-squares Regression')
 
-    experiment(polyx,polyy,sampx,sampy,method='RLS',plot_title='Regularize LS Regression')
+    para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':5}
 
-    experiment(polyx,polyy,sampx,sampy,method='LASSO',plot_title='Regularize LASSO Regression')
+    para_err_RLS,best_RLS = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
 
-    experiment(polyx,polyy,sampx,sampy,method='RR',plot_title='Robust Regression')
+    print(best_RLS)
 
-    experiment(polyx,polyy,sampx,sampy,method='BR',plot_title='Bayesian Regression')
+    para_LASSO = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':5}
+
+    para_err_LASSO,best_LASSO = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='LASSO')
+
+    print(best_LASSO)
+
     # my code here
 
 if __name__ == "__main__":
