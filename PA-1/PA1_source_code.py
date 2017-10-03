@@ -253,6 +253,13 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
 
     return theta, prediction
 
+def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS',plot_title='Least-squares Regression'):
+
+    addedx = np.hstack((sampx,olx))
+    addedy = np.hstack((sampy,oly))
+    
+    return experiment(polyx,polyy,addedx,addedy,paradict=paradict,method=method,plot_title=plot_title)
+
 def main():
 
     polyx,polyy,sampx,sampy,PHIX = load_dataset()
