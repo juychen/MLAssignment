@@ -4,6 +4,7 @@ import math as m
 import matplotlib.pyplot as plt
 import cvxopt
 from scipy.stats import multivariate_normal
+from sklearn.utils import resample
 from cvxopt import matrix
 from cvxopt import solvers
 
@@ -183,11 +184,42 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.show()
     return
 
-def experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_title='Least-squares Regression'):
+def learning_curve(polyx,polyy,sampx,sampy,PHIX,paradict={},subset=[1],function='poly',method='LS',plot_title='Least-squares Regression'):
+    
+    for size in subset:
+        nsamp = size*len(sampy)
+        resampx, resampy = resample(sampx, sampy,n_samples=nsamp, random_state=0)
+
+    
+    return 0
+
+def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},function='poly',method='LS',plot_title='Least-squares Regression'):
     
     prediction= np.array([])
     theta = np.array([])
 
+    # parameter is not empty
+    if paradict:
+
+        try:
+            if (method == 'BR'):
+                theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=paradict['alpha'],sigma=paradict['sigma'])
+                prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=paradict['function'])
+                plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
+                return theta,SIGMA_theta, prediction,cov
+
+
+            else:
+                theta = para_estimate(sampy,PHIX,Lambda=paradict['Lambda'],method=method)
+                prediction = predict(polyx,theta,function=paradict['function'])
+                plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title) 
+                return theta, prediction
+            
+        except Exception as e:
+            print (e)
+            return 
+
+    # parameter is empty
     if (method == 'BR'):
             theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
             prediction,cov = predict_BR(polyx,theta,SIGMA_theta)
