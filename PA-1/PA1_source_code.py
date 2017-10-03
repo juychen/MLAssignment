@@ -139,6 +139,7 @@ def plot_f_s(x,y,pred,sampx,sampy,label):
     plt.legend()
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
+    plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
     plt.show()
     return 
 
@@ -150,6 +151,7 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
     plt.errorbar(x, pred,yerr = deviation)
+    plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
     plt.show()
     return
 
