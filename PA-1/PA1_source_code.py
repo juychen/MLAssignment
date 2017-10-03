@@ -184,11 +184,12 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.show()
     return
 
-def learning_curve(polyx,polyy,sampx,sampy,PHIX,paradict={},subset=[1],function='poly',method='LS',plot_title='Least-squares Regression'):
+def learning_curve(polyx,polyy,sampx,sampy,PHIX,paradict={},subset=[1],function='poly',method='LS',plot_title='Learning Curve'):
     
     for size in subset:
         nsamp = size*len(sampy)
         resampx, resampy = resample(sampx, sampy,n_samples=nsamp, random_state=0)
+        if()
 
     
     return 0
@@ -216,6 +217,7 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},method='LS',plot_title='
                 return theta, prediction
             
         except Exception as e:
+            print ('missing parameter: ')
             print (e)
             return 
 
