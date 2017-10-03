@@ -193,7 +193,7 @@ def learning_curve(polyx,polyy,sampx,sampy,PHIX,paradict={},subset=[1],function=
     
     return 0
 
-def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},function='poly',method='LS',plot_title='Least-squares Regression'):
+def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},method='LS',plot_title='Least-squares Regression'):
     
     prediction= np.array([])
     theta = np.array([])
@@ -227,7 +227,7 @@ def experiment(polyx,polyy,sampx,sampy,PHIX,paradict={},function='poly',method='
             return theta,SIGMA_theta, prediction,cov
 
     theta = para_estimate(sampy,PHIX,method=method)
-    prediction = predict(polyx,theta,function=function)
+    prediction = predict(polyx,theta)
     plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
 
     return theta, prediction
@@ -236,15 +236,15 @@ def main():
 
     polyx,polyy,sampx,sampy,PHIX = load_dataset()
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LS',plot_title='Least-squares Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,method='LS',plot_title='Least-squares Regression')
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='RLS',plot_title='Regularize LS Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,method='RLS',plot_title='Regularize LS Regression')
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='LASSO',plot_title='Regularize LASSO Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,method='LASSO',plot_title='Regularize LASSO Regression')
 
-    experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='RR',plot_title='Robust Regression')
+    experiment(polyx,polyy,sampx,sampy,PHIX,method='RR',plot_title='Robust Regression')
 
-    theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,sampx,sampy,PHIX,function='poly',method='BR',plot_title='Bayesian Regression')
+    theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,sampx,sampy,PHIX,method='BR',plot_title='Bayesian Regression')
     # my code here
 
 if __name__ == "__main__":
