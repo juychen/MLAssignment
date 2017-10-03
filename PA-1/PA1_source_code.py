@@ -23,9 +23,8 @@ def load_dataset():
     polyy = load_file(filename = 'polydata_data_polyy.txt')
     sampx = load_file(filename = 'polydata_data_sampx.txt')
     sampy = load_file(filename = 'polydata_data_sampy.txt')
-    PHIX = PHIx(sampx,order=5,function='poly')
 
-    return polyx,polyy,sampx,sampy,PHIX
+    return polyx,polyy,sampx,sampy
 
 # transpose 
 def T(x):
@@ -264,7 +263,7 @@ def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS'
 
 def main():
 
-    polyx,polyy,sampx,sampy,PHIX = load_dataset()
+    polyx,polyy,sampx,sampy = load_dataset()
 
     experiment(polyx,polyy,sampx,sampy,method='LS',plot_title='Least-squares Regression')
 
