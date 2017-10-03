@@ -189,22 +189,21 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.show()
     return
 
-def learning_curve(polyx,polyy,sampx,sampy,PHIX,paradict={},subset=[1],method='LS',plot_title='Learning Curve'):
-    
+def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],method='LS',plot_title='Learning Curve'):
+    err = []
     for size in subset:
-        nsamp = size*len(sampy)
-        resampx, resampy = resample(sampx, sampy,n_samples=nsamp, random_state=0)
+        nsamp = int(size*len(sampy))
+        resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=0)
         # if parameter dictionnary is not empty
-        if(paradict):
-            rePHIX = PHIx(resampx,order=paradict['order'],function=paradict['function'])
+        if method == 'BR':
+            theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
+        
         else :
-            rePHIX = PHIx(resampx)
+            theta, prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
+        
+        err.append(mse(polyy,prediction))
 
-        if(method == 'BR'):
-            experiment(polyx,polyy,resampx,resampy,rePHIX,paradict)
-
-    
-    return 0
+    return err
 
 def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression'):
     
@@ -262,7 +261,7 @@ def main():
 
     experiment(polyx,polyy,sampx,sampy,method='RR',plot_title='Robust Regression')
 
-    theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,sampx,sampy,method='BR',plot_title='Bayesian Regression')
+    experiment(polyx,polyy,sampx,sampy,method='BR',plot_title='Bayesian Regression')
     # my code here
 
 if __name__ == "__main__":
