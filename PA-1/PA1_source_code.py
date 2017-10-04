@@ -164,31 +164,34 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     if (estimator == 'RLS' or estimator == 'LASSO'):
         Lambdas = param_dict['Lambda']
         functions = param_dict['function']
+        orders = param_dict['order']
 
-        for function in functions:
-            
-            PHIX = PHIx(sampx,order=int(param_dict['order']),function=function)
-
-            for Lambda in Lambdas:
+        for order in orders:
+            for function in functions:
+                PHIX = PHIx(sampx,order=order,function=function)
+                for Lambda in Lambdas:
                     theta = para_estimate(sampy,PHIX,Lambda=Lambda,method=estimator)
                     prediction = predict(polyx,theta,function=function)
                     err = mse(prediction,polyy)
-                    opt_para[function,Lambda] = err
+                    paraset = {'function':function,'order':order,'Lambda':Lambda}
+                    opt_para[str(paraset)] = err
     
     if (estimator == 'BR'):
         alphas = param_dict['alpha']
         sigmas = param_dict['sigma']
         functions = param_dict['function']
+        orders = param_dict['order']
 
-        for function in functions:
-            PHIX = PHIx(sampx,order=int(param_dict['order']),function=function)
-
-            for alpha in alphas:
-                for sigma in sigmas:
-                     theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=alpha,sigma=sigma)
-                     prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=function)
-                     err = mse(prediction,polyy)
-                     opt_para[function,alpha,sigma] = err
+        for order in orders:
+            for function in functions:
+                PHIX = PHIx(sampx,order=order,function=function)
+                for alpha in alphas:
+                    for sigma in sigmas:
+                        theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=alpha,sigma=sigma)
+                        prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=function)
+                        err = mse(prediction,polyy)
+                        paraset = {'function':function,'order':order,'alpha':alpha,'sigma':sigma}
+                        opt_para[str(paraset)] = err        
     
     best = min(opt_para, key=opt_para.get)
     return opt_para,best
@@ -275,13 +278,13 @@ def main():
 
     experiment(polyx,polyy,sampx,sampy,method='LS',plot_title='Least-squares Regression')
 
-    para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':5}
+    para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
 
     para_err_RLS,best_RLS = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
 
     print(best_RLS)
 
-    para_LASSO = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':5}
+    para_LASSO = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
 
     para_err_LASSO,best_LASSO = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='LASSO')
 
