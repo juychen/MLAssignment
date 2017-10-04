@@ -210,7 +210,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
         err_perround = 0
         for i in range(0,repeat):
             resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i*17)
-            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(size),show_plot=False)
+            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(round(size,1)),show_plot=not i)
             # if parameter dictionnary is not empty
             #if method == 'BR':
                 #theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
@@ -325,7 +325,7 @@ def main():
     mse_BR = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR'])
 
     # learning curve experiments
-    subset = np.linspace(0.2,1,10)
+    subset = np.linspace(0.2,1,5)
     err_LS = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='LS',plot_title='Learning Curve '+NAME_MAP['LS'])
     err_RLS = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='RLS',plot_title='Learning Curve '+NAME_MAP['RLS'])
     err_LASSO = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='LASSO',plot_title='Learning Curve '+NAME_MAP['LASSO'])
