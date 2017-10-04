@@ -234,7 +234,8 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=paradict['alpha'],sigma=paradict['sigma'])
                 prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=paradict['function'])
                 plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
-                return theta,SIGMA_theta, prediction,cov
+                #return theta,SIGMA_theta, prediction,cov
+                return mse(prediction,polyy)
 
 
             else:
@@ -242,7 +243,8 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 theta = para_estimate(sampy,PHIX,Lambda=paradict['Lambda'],method=method)
                 prediction = predict(polyx,theta,function=paradict['function'])
                 plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title) 
-                return theta, prediction
+                #return theta, prediction
+                return mse(prediction,polyy)
             
         except Exception as e:
             print ('missing parameter: ')
@@ -255,14 +257,16 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
             theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
             prediction,cov = predict_BR(polyx,theta,SIGMA_theta)
             plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
-            return theta,SIGMA_theta, prediction,cov
+            #return theta,SIGMA_theta, prediction,cov
+            return mse(prediction,polyy)
 
     PHIX = PHIx(sampx)
     theta = para_estimate(sampy,PHIX,method=method)
     prediction = predict(polyx,theta)
     plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
 
-    return theta, prediction
+    #return theta, prediction
+    return mse(prediction,polyy)
 
 # Set experiments with outliers
 def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS',plot_title='Least-squares Regression'):
