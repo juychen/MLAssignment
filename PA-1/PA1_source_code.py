@@ -157,9 +157,8 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
 
 # model selection to search the best parameter 
 def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
-    opt_para={}
+    para_err_map={}
     best_para={}
-    min_err = m.inf
 
     if (estimator == 'RLS' or estimator == 'LASSO'):
         Lambdas = param_dict['Lambda']
@@ -174,7 +173,7 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
                     prediction = predict(polyx,theta,function=function)
                     err = mse(prediction,polyy)
                     paraset = {'function':function,'order':order,'Lambda':Lambda}
-                    opt_para[str(paraset)] = err
+                    para_err_map[str(paraset)] = err
     
     if (estimator == 'BR'):
         alphas = param_dict['alpha']
@@ -191,10 +190,11 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
                         prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=function)
                         err = mse(prediction,polyy)
                         paraset = {'function':function,'order':order,'alpha':alpha,'sigma':sigma}
-                        opt_para[str(paraset)] = err        
+                        para_err_map[str(paraset)] = err        
     
-    best = min(opt_para, key=opt_para.get)
-    return opt_para,best
+    best = min(para_err_map, key=para_err_map.get)
+    best_para = eval(best)
+    return para_err_map,best_para
 
 # Plot learning curve with different data size
 def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve'):
