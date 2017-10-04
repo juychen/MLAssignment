@@ -327,5 +327,18 @@ def main():
     err_RR = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='RR',plot_title='Learning Curve '+NAME_MAP['RR'])
     err_BR = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='BR',plot_title='Learning Curve '+NAME_MAP['BR'])
 
+    outliers_x = [-1.3,0.5,0.7,1]
+    outliers_y = [80,30,50,-30]
+
+    mseol_LS = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='LS',plot_title=NAME_MAP['LS']+' with Outliers')
+
+    mseol_RR = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='RR',plot_title=NAME_MAP['RR']+' with Outliers')
+   
+    mseol_RLS = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS']+' with Outliers')
+
+    mseol_LASSO = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO']+' with Outliers')
+
+    mseol_BR = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR']+' with Outliers')
+
 if __name__ == "__main__":
     main()
