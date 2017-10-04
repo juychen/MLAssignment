@@ -302,7 +302,11 @@ def main():
     
     # methods without hyper parameters
     mse_LS = experiment(polyx,polyy,sampx,sampy,method='LS',plot_title=NAME_MAP['LS'])
+    mseMap_toCSV({'nohparam':mse_LS},'mse_LS.csv')
+
     mse_RR = experiment(polyx,polyy,sampx,sampy,method='RR',plot_title=NAME_MAP['RR'])
+    mseMap_toCSV({'nohparam':mse_RR},'mse_RR.csv')
+
 
     # methods with hyper parameters
     para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
@@ -343,7 +347,10 @@ def main():
     para_BR_o10 = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[10]}
 
     mse_LS_o10 = experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='LS',plot_title=NAME_MAP['LS']+' order 10')
+    mseMap_toCSV({'nohparam':mse_LS_o10},'mse_LS_o10.csv')
+
     mse_RR_o10 = experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='RR',plot_title=NAME_MAP['RR']+' order 10')
+    mseMap_toCSV({'nohparam':mse_RR_o10},'mse_RR_o10.csv')
 
     # methods with hyper parameters
     para_err_RLS_o10,opt_para_RLS_o10 = model_selection(polyx,polyy,sampx,sampy,para_Lambda_o10,estimator='RLS')
