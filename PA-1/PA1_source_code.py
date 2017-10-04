@@ -280,16 +280,15 @@ def main():
 
     para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
 
-    para_err_RLS,best_RLS = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
-
-    print(best_RLS)
+    para_err_RLS,opt_para_RLS = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
 
     para_LASSO = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
 
-    para_err_LASSO,best_LASSO = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='LASSO')
+    para_err_LASSO,opt_para_LASSO = model_selection(polyx,polyy,sampx,sampy,para_LASSO,estimator='LASSO')
 
-    print(best_LASSO)
+    para_BR = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[5]}
 
+    para_err_BR,opt_para_BR = model_selection(polyx,polyy,sampx,sampy,para_BR,estimator='BR')
     # my code here
 
 if __name__ == "__main__":
