@@ -299,11 +299,12 @@ def mseMap_toCSV(msedict,fname='mse.csv'):
 def main():
 
     polyx,polyy,sampx,sampy = load_dataset()
-
+    
+    # methods without hyper parameters
     mse_LS = experiment(polyx,polyy,sampx,sampy,method='LS',plot_title=NAME_MAP['LS'])
-
     mse_RR = experiment(polyx,polyy,sampx,sampy,method='RR',plot_title=NAME_MAP['RR'])
 
+    # methods with hyper parameters
     para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
     para_err_RLS,opt_para_RLS = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
     mseMap_toCSV(para_err_RLS,'mse_RLS.csv')
@@ -314,12 +315,12 @@ def main():
     mseMap_toCSV(para_err_LASSO,'mse_LASSO.csv')
     mse_LASSO = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO'])
 
-
     para_BR = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[5]}
     para_err_BR,opt_para_BR = model_selection(polyx,polyy,sampx,sampy,para_BR,estimator='BR')
     mseMap_toCSV(para_err_BR,'mse_BR.csv')
     mse_BR = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR'])
 
+    # learning curve experiments
     subset = np.linspace(0.2,1,10)
     err_LS = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='LS',plot_title='Learning Curve '+NAME_MAP['LS'])
     err_RLS = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='RLS',plot_title='Learning Curve '+NAME_MAP['RLS'])
@@ -327,18 +328,35 @@ def main():
     err_RR = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='RR',plot_title='Learning Curve '+NAME_MAP['RR'])
     err_BR = learning_curve(polyx,polyy,sampx,sampy,subset=subset,repeat=10,method='BR',plot_title='Learning Curve '+NAME_MAP['BR'])
 
+    # outliers experiments
     outliers_x = [-1.3,0.5,0.7,1]
     outliers_y = [80,30,50,-30]
 
     mseol_LS = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='LS',plot_title=NAME_MAP['LS']+' with Outliers')
-
     mseol_RR = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='RR',plot_title=NAME_MAP['RR']+' with Outliers')
-   
     mseol_RLS = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS']+' with Outliers')
-
     mseol_LASSO = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO']+' with Outliers')
-
     mseol_BR = outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR']+' with Outliers')
+
+    # higer order experiments
+    para_Lambda_o10 = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[10]}
+    para_BR_o10 = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[10]}
+
+    mse_LS_o10 = experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='LS',plot_title=NAME_MAP['LS']+' order 10')
+    mse_RR_o10 = experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='RR',plot_title=NAME_MAP['RR']+' order 10')
+
+    # methods with hyper parameters
+    para_err_RLS_o10,opt_para_RLS_o10 = model_selection(polyx,polyy,sampx,sampy,para_Lambda_o10,estimator='RLS')
+    mseMap_toCSV(para_err_RLS_o10,'mse_RLS_o10.csv')
+    mse_RLS_o10 = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS_o10,method='RLS',plot_title=NAME_MAP['RLS']+' order 10')
+
+    para_err_LASSO_o10,opt_para_LASSO_o10 = model_selection(polyx,polyy,sampx,sampy,para_Lambda_o10,estimator='LASSO')
+    mseMap_toCSV(para_err_LASSO_o10,'mse_LASSO_o10.csv')
+    mse_LASSO_o10 = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO_o10,method='LASSO',plot_title=NAME_MAP['LASSO']+' order 10')
+
+    para_err_BR_o10,opt_para_BR_o10 = model_selection(polyx,polyy,sampx,sampy,para_BR_o10,estimator='BR')
+    mseMap_toCSV(para_err_BR_o10,'mse_BR_o10.csv')
+    mse_BR_o10 = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR_o10,method='BR',plot_title=NAME_MAP['BR']+' order 10')
 
 if __name__ == "__main__":
     main()
