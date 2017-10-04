@@ -11,6 +11,12 @@ from cvxopt import solvers
 
 # cd D:\\OneDrive\\文档\\cityu\\MachineLearning\\MLAssignment\\
 
+NAME_MAP = {'LS':'Least Square Regression',
+            'RLS':'Regularized LS',
+            'LASSO':'L1-Regularized LS',
+            'RR':'Robust Regression',
+            'BR':'Bayesian Regression'}
+
 # define the polynomial function
 def poly_function(x,order = 1):
     return np.array([m.pow(x,i) for i in range(0,order+1) ])
@@ -204,12 +210,13 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
         err_perround = 0
         for i in range(0,repeat):
             resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i)
+            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
             # if parameter dictionnary is not empty
-            if method == 'BR':
-                theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
-            else :
-                theta, prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
-            err_perround += mse(polyy,prediction)
+            #if method == 'BR':
+                #theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
+            #else :
+                #theta, prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
+            err_perround += round_err
                 
         err.append(err_perround/repeat)
 
@@ -280,7 +287,9 @@ def main():
 
     polyx,polyy,sampx,sampy = load_dataset()
 
-    experiment(polyx,polyy,sampx,sampy,method='LS',plot_title='Least-squares Regression')
+    mse_LS = experiment(polyx,polyy,sampx,sampy,method='LS',plot_title='Least-squares Regression')
+
+    mse_RR = experiment(polyx,polyy,sampx,sampy,method='RR',plot_title='Robust Regression')
 
     para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
 
