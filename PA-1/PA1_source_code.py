@@ -283,6 +283,14 @@ def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS'
 
     return experiment(polyx,polyy,addedx,addedy,paradict=paradict,method=method,plot_title=plot_title)
 
+def mseMap_toCSV(msedict,fname='mse.csv'):
+    keys = list(msedict.keys())
+    values = list(msedict.values())
+    mseDf = pd.DataFrame({'mse':values},index=keys)
+    mseDf.sort(columns='mse',inplace=True)
+    mseDf.to_csv(os.path.join('PA-1','plots',fname))
+    return
+
 def main():
 
     polyx,polyy,sampx,sampy = load_dataset()
@@ -293,18 +301,18 @@ def main():
 
     para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
     para_err_RLS,opt_para_RLS = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
-    print(para_err_RLS)
-    mse_RlS = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS'])
+    mseMap_toCSV(para_err_RLS,'mse_RLS.csv')
+    mse_RLS = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS'])
 
     para_LASSO = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
     para_err_LASSO,opt_para_LASSO = model_selection(polyx,polyy,sampx,sampy,para_LASSO,estimator='LASSO')
-    print(para_err_LASSO)
+    mseMap_toCSV(para_err_LASSO,'mse_LASSO.csv')
     mse_LASSO = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO'])
 
 
     para_BR = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[5]}
     para_err_BR,opt_para_BR = model_selection(polyx,polyy,sampx,sampy,para_BR,estimator='BR')
-    print(para_err_BR)
+    mseMap_toCSV(para_err_BR,'mse_BR.csv')
     mse_BR = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR'])
 
 
