@@ -203,14 +203,14 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     return para_err_map,best_para
 
 # Plot learning curve with different data size
-def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve'):
+def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve LS'):
     err = []
     for size in subset:
         nsamp = int(size*len(sampy))
         err_perround = 0
         for i in range(0,repeat):
-            resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i)
-            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
+            resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i*17)
+            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(size))
             # if parameter dictionnary is not empty
             #if method == 'BR':
                 #theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
@@ -220,7 +220,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
                 
         err.append(err_perround/repeat)
 
-    plt.plot(subset, err, label='Leaning Curve',c='b')
+    plt.plot(subset, err, label=plot_title,c='b')
     plt.legend()
     plt.show()
 
@@ -287,21 +287,27 @@ def main():
 
     polyx,polyy,sampx,sampy = load_dataset()
 
-    mse_LS = experiment(polyx,polyy,sampx,sampy,method='LS',plot_title='Least-squares Regression')
+    mse_LS = experiment(polyx,polyy,sampx,sampy,method='LS',plot_title=NAME_MAP['LS'])
 
-    mse_RR = experiment(polyx,polyy,sampx,sampy,method='RR',plot_title='Robust Regression')
+    mse_RR = experiment(polyx,polyy,sampx,sampy,method='RR',plot_title=NAME_MAP['RR'])
 
     para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
-
     para_err_RLS,opt_para_RLS = model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
+    print(para_err_RLS)
+    mse_RlS = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS'])
 
     para_LASSO = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
-
     para_err_LASSO,opt_para_LASSO = model_selection(polyx,polyy,sampx,sampy,para_LASSO,estimator='LASSO')
+    print(para_err_LASSO)
+    mse_LASSO = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO'])
+
 
     para_BR = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[5]}
-
     para_err_BR,opt_para_BR = model_selection(polyx,polyy,sampx,sampy,para_BR,estimator='BR')
+    print(para_err_BR)
+    mse_BR = experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR'])
+
+
     # my code here
 
 if __name__ == "__main__":
