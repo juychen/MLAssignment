@@ -138,18 +138,19 @@ def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
         return miu_star,sigma_theta_sqr
 
 # Generate Plots 
-def plot_f_s(x,y,pred,sampx,sampy,label):
+def plot_f_s(x,y,pred,sampx,sampy,label,show_plot=True):
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
     plt.plot(x, pred, label=label,c='b')
     plt.legend()
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
-    plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
-    plt.show()
+    if (show_plot==True) : 
+        plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
+        plt.show()
     return 
 
-def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
+def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label,show_plot=True):
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
     plt.plot(x, pred, label=label,c='b')  
@@ -157,8 +158,9 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
     plt.errorbar(x, pred,yerr = deviation)
-    plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
-    plt.show()
+    if (show_plot==True) : 
+        plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
+        plt.show()    
     return
 
 # model selection to search the best parameter 
@@ -210,7 +212,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
         err_perround = 0
         for i in range(0,repeat):
             resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i*17)
-            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(size))
+            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(size),show_plot=False)
             # if parameter dictionnary is not empty
             #if method == 'BR':
                 #theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
@@ -227,7 +229,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
     return err
 
 # Define experiment with certain method and data
-def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression'):
+def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression',show_plot=True):
     
     prediction= np.array([])
     theta = np.array([])
@@ -240,7 +242,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 PHIX = PHIx(sampx,order=paradict['order'],function=paradict['function'])
                 theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX,alpha=paradict['alpha'],sigma=paradict['sigma'])
                 prediction,cov = predict_BR(polyx,theta,SIGMA_theta,function=paradict['function'])
-                plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
+                plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title,show_plot=show_plot)
                 #return theta,SIGMA_theta, prediction,cov
                 return mse(prediction,polyy)
 
@@ -249,7 +251,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 PHIX = PHIx(sampx,order=paradict['order'],function=paradict['function'])
                 theta = para_estimate(sampy,PHIX,Lambda=paradict['Lambda'],method=method)
                 prediction = predict(polyx,theta,function=paradict['function'])
-                plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title) 
+                plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title,show_plot=show_plot) 
                 #return theta, prediction
                 return mse(prediction,polyy)
             
@@ -263,14 +265,14 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
             PHIX = PHIx(sampx)
             theta,SIGMA_theta = posterior_BR(sampx,sampy,PHIX)
             prediction,cov = predict_BR(polyx,theta,SIGMA_theta)
-            plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
+            plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title,show_plot=show_plot)
             #return theta,SIGMA_theta, prediction,cov
             return mse(prediction,polyy)
 
     PHIX = PHIx(sampx)
     theta = para_estimate(sampy,PHIX,method=method)
     prediction = predict(polyx,theta)
-    plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
+    plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title,show_plot=show_plot)
 
     #return theta, prediction
     return mse(prediction,polyy)
