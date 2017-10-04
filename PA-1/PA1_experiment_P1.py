@@ -4,6 +4,8 @@ import pandas as pd
 import math as m
 import os
 
+# cd D:\\OneDrive\\文档\\cityu\\MachineLearning\\MLAssignment\\
+
 NAME_MAP = imp.NAME_MAP
 
 def main():

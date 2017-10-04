@@ -9,6 +9,8 @@ from sklearn.utils import resample
 from cvxopt import matrix
 from cvxopt import solvers
 
+import matplotlib
+
 # cd D:\\OneDrive\\文档\\cityu\\MachineLearning\\MLAssignment\\
 
 NAME_MAP = {'LS':'Least Square Regression',
@@ -139,6 +141,9 @@ def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 
 # Generate Plots 
 def plot_f_s(x,y,pred,sampx,sampy,label):
+
+    matplotlib.use('Agg')
+
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
     plt.plot(x, pred, label=label,c='b')
@@ -146,10 +151,13 @@ def plot_f_s(x,y,pred,sampx,sampy,label):
     plt.plot(sampx, sampy,'ro',label='data')
     plt.legend()
     plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
-    plt.show()
+    plt.close()
     return 
 
 def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
+
+    matplotlib.use('Agg')
+
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
     plt.plot(x, pred, label=label,c='b')  
@@ -158,7 +166,8 @@ def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
     plt.legend()
     plt.errorbar(x, pred,yerr = deviation)
     plt.savefig(os.path.join('PA-1','plots',label+'.jpg'))
-    plt.show()    
+    plt.close()
+
     return
 
 # model selection to search the best parameter 
@@ -223,7 +232,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
     plt.plot(subset, err, label=plot_title,c='b')
     plt.legend()
     plt.savefig(os.path.join('PA-1','plots',plot_title+'.jpg'))
-    plt.show()
+    plt.close()
 
     return err
 
