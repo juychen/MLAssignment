@@ -13,10 +13,10 @@ def main():
     polyx,polyy,sampx,sampy = imp.load_dataset()
     
     # methods without hyper parameters
-    mse_LS = imp.experiment(polyx,polyy,sampx,sampy,method='LS',plot_title=NAME_MAP['LS'])
+    mse_LS,prediction_LS = imp.experiment(polyx,polyy,sampx,sampy,method='LS',plot_title=NAME_MAP['LS'])
     imp.mseMap_toCSV({'nohparam':mse_LS},'mse_LS.csv')
 
-    mse_RR = imp.experiment(polyx,polyy,sampx,sampy,method='RR',plot_title=NAME_MAP['RR'])
+    mse_RR,prediction_RR = imp.experiment(polyx,polyy,sampx,sampy,method='RR',plot_title=NAME_MAP['RR'])
     imp.mseMap_toCSV({'nohparam':mse_RR},'mse_RR.csv')
 
 
@@ -24,17 +24,17 @@ def main():
     para_RLS = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
     para_err_RLS,opt_para_RLS = imp.model_selection(polyx,polyy,sampx,sampy,para_RLS,estimator='RLS')
     imp.mseMap_toCSV(para_err_RLS,'mse_RLS.csv')
-    mse_RLS = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS'])
+    mse_RLS,prediction_RLS = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS'])
 
     para_LASSO = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[5]}
     para_err_LASSO,opt_para_LASSO = imp.model_selection(polyx,polyy,sampx,sampy,para_LASSO,estimator='LASSO')
     imp.mseMap_toCSV(para_err_LASSO,'mse_LASSO.csv')
-    mse_LASSO = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO'])
+    mse_LASSO,prediction_LASSO = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO'])
 
     para_BR = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[5]}
     para_err_BR,opt_para_BR = imp.model_selection(polyx,polyy,sampx,sampy,para_BR,estimator='BR')
     imp.mseMap_toCSV(para_err_BR,'mse_BR.csv')
-    mse_BR = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR'])
+    mse_BR,prediction_BR = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR'])
 
     # learning curve imp.experiments
     subset = np.linspace(0.2,1,5)
@@ -58,24 +58,24 @@ def main():
     para_Lambda_o10 = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[10]}
     para_BR_o10 = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['poly'],'order':[10]}
 
-    mse_LS_o10 = imp.experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='LS',plot_title=NAME_MAP['LS']+' order 10')
+    mse_LS_o10,prediction_LSo10 = imp.experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='LS',plot_title=NAME_MAP['LS']+' order 10')
     imp.mseMap_toCSV({'nohparam':mse_LS_o10},'mse_LS_o10.csv')
 
-    mse_RR_o10 = imp.experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='RR',plot_title=NAME_MAP['RR']+' order 10')
+    mse_RR_o10,prediction_RRo10 = imp.experiment(polyx,polyy,sampx,sampy,paradict={'function':'poly','order':10,'Lambda':0},method='RR',plot_title=NAME_MAP['RR']+' order 10')
     imp.mseMap_toCSV({'nohparam':mse_RR_o10},'mse_RR_o10.csv')
 
     # methods with hyper parameters
     para_err_RLS_o10,opt_para_RLS_o10 = imp.model_selection(polyx,polyy,sampx,sampy,para_Lambda_o10,estimator='RLS')
     imp.mseMap_toCSV(para_err_RLS_o10,'mse_RLS_o10.csv')
-    mse_RLS_o10 = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS_o10,method='RLS',plot_title=NAME_MAP['RLS']+' order 10')
+    mse_RLS_o10,prediction_RLSo10 = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_RLS_o10,method='RLS',plot_title=NAME_MAP['RLS']+' order 10')
 
     para_err_LASSO_o10,opt_para_LASSO_o10 = imp.model_selection(polyx,polyy,sampx,sampy,para_Lambda_o10,estimator='LASSO')
     imp.mseMap_toCSV(para_err_LASSO_o10,'mse_LASSO_o10.csv')
-    mse_LASSO_o10 = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO_o10,method='LASSO',plot_title=NAME_MAP['LASSO']+' order 10')
+    mse_LASSO_o10,prediction_LASSOo10 = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_LASSO_o10,method='LASSO',plot_title=NAME_MAP['LASSO']+' order 10')
 
     para_err_BR_o10,opt_para_BR_o10 = imp.model_selection(polyx,polyy,sampx,sampy,para_BR_o10,estimator='BR')
     imp.mseMap_toCSV(para_err_BR_o10,'mse_BR_o10.csv')
-    mse_BR_o10 = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR_o10,method='BR',plot_title=NAME_MAP['BR']+' order 10')
+    mse_BR_o10,prediction_BRo10 = imp.experiment(polyx,polyy,sampx,sampy,paradict=opt_para_BR_o10,method='BR',plot_title=NAME_MAP['BR']+' order 10')
 
 if __name__ == "__main__":
     main()

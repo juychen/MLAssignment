@@ -142,8 +142,6 @@ def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 # Generate Plots 
 def plot_f_s(x,y,pred,sampx,sampy,label):
 
-    matplotlib.use('Agg')
-
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
     plt.plot(x, pred, label=label,c='b')
@@ -155,8 +153,6 @@ def plot_f_s(x,y,pred,sampx,sampy,label):
     return 
 
 def plot_f_s_std(x,y,pred,sampx,sampy,deviation,label):
-
-    matplotlib.use('Agg')
 
     plt.plot(x, y, label='True Function',c='k')
     plt.legend()
@@ -214,21 +210,29 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
 # Plot learning curve with different data size
 def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve LS'):
     err = []
+    plt.plot(polyx, polyy, label='True Function',c='k')
     for size in subset:
         nsamp = int(size*len(sampy))
         err_perround = 0
         for i in range(0,repeat):
             resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i*17)
-            round_err = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(round(size,1)),show_plot=not i)
+            round_err,prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(round(size,1)),show_plot=False)
+            if(i==0):
+                plt.legend()
+                plt.plot(polyx, prediction, label=NAME_MAP[method]+' subset '+str(round(size,1)))
+                plt.legend()
+
             # if parameter dictionnary is not empty
             #if method == 'BR':
                 #theta,SIGMA_theta, prediction,cov = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
             #else :
                 #theta, prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
             err_perround += round_err
-                
+        
+        plt.savefig(os.path.join('PA-1','plots',NAME_MAP[method]+' in '+str(repeat)+' rounds.jpg'))
         err.append(err_perround/repeat)
 
+    plt.close()        
     plt.plot(subset, err, label=plot_title,c='b')
     plt.legend()
     plt.savefig(os.path.join('PA-1','plots',plot_title+'.jpg'))
@@ -253,7 +257,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 if(show_plot==True):
                     plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
                 #return theta,SIGMA_theta, prediction,cov
-                return mse(prediction,polyy)
+                return mse(prediction,polyy),prediction
 
 
             else:
@@ -263,7 +267,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 if(show_plot==True):
                     plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title) 
                 #return theta, prediction
-                return mse(prediction,polyy)
+                return mse(prediction,polyy),prediction
             
         except Exception as e:
             print ('missing parameter: ')
@@ -278,7 +282,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
             if(show_plot==True):
                 plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
             #return theta,SIGMA_theta, prediction,cov
-            return mse(prediction,polyy)
+            return mse(prediction,polyy),prediction
 
     PHIX = PHIx(sampx)
     theta = para_estimate(sampy,PHIX,method=method)
@@ -287,7 +291,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
         plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
 
     #return theta, prediction
-    return mse(prediction,polyy)
+    return mse(prediction,polyy),prediction
 
 # Set experiments with outliers
 def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS',plot_title='Least-squares Regression'):
