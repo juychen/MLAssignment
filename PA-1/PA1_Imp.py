@@ -24,10 +24,14 @@ def poly_function(x,order = 1):
     if(len(x.shape)<2):
         return np.array([m.pow(x,i) for i in range(0,order+1) ])
     else:
-        result = []
+        result = np.array([])
         xT = T(x)
         for rxT in xT:
-        
+            row_vect= np.array([1])
+            for item in rxT:
+                row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
+            result = np.vstack((result, row_vect))
+                
         return result
         
 
