@@ -1,7 +1,7 @@
 ,mse
-"{'function': 'poly', 'order': 5, 'Lambda': 0.1}",0.4128320351129849
-"{'function': 'poly', 'order': 5, 'Lambda': 0.25}",0.4201678693250258
-"{'function': 'poly', 'order': 5, 'Lambda': 0.5}",0.43463633087073444
-"{'function': 'poly', 'order': 5, 'Lambda': 1}",0.47460685881917763
-"{'function': 'poly', 'order': 5, 'Lambda': 2}",0.5191281609076239
-"{'function': 'poly', 'order': 5, 'Lambda': 5}",0.5698419737535146
+"{'function': 'poly', 'order': 5, 'Lambda': 0.1}",0.41283203511299355
+"{'function': 'poly', 'order': 5, 'Lambda': 0.25}",0.4201678693250377
+"{'function': 'poly', 'order': 5, 'Lambda': 0.5}",0.43463633087073456
+"{'function': 'poly', 'order': 5, 'Lambda': 1}",0.4746068588191892
+"{'function': 'poly', 'order': 5, 'Lambda': 2}",0.519128160907626
+"{'function': 'poly', 'order': 5, 'Lambda': 5}",0.5698419737535145
