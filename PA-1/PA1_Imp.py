@@ -21,7 +21,15 @@ NAME_MAP = {'LS':'Least Square Regression',
 
 # define the polynomial function
 def poly_function(x,order = 1):
-    return np.array([m.pow(x,i) for i in range(0,order+1) ])
+    if(len(x.shape)<2):
+        return np.array([m.pow(x,i) for i in range(0,order+1) ])
+    else:
+        result = []
+        xT = T(x)
+        for rxT in xT:
+        
+        return result
+        
 
 # load file from txt
 def load_file(filename = 'polydata_data_polyx.txt'):
@@ -56,6 +64,8 @@ def PHIx(x,order=5,function='poly'):
         mat = [poly_function(item,order) for item in x ]
         #return np.transpose(np.array(mat))
         return T(np.array(mat))
+    if(function == 'id'):
+        return x
 
 # return objective function according to different methods.
 def obj_function(y,PHI,theta,Lambda=0,method='LS'):
@@ -130,6 +140,17 @@ def mse(y,prediction):
     rp = prediction.reshape(len(prediction),1)
     e = ry - rp
     return (np.dot(T(e),e)/len(e))[0,0]
+
+# define mean absolute error
+def mae(y,prediction):
+
+    if(len(y)!=len(prediction)):
+        return m.inf
+
+    ry =  y.reshape(len(y),1)
+    rp = prediction.reshape(len(prediction),1)
+    e = ry - rp
+    return np.linalg.norm(e,ord=1)/len(e)
 
 # define posterior of Bayesian Regression
 def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
