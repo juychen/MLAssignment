@@ -305,6 +305,6 @@ def mseMap_toCSV(msedict,fname='mse.csv'):
     keys = list(msedict.keys())
     values = list(msedict.values())
     mseDf = pd.DataFrame({'mse':values},index=keys)
-    mseDf.sort(columns='mse',inplace=True)
+    mseDf.sort_values('mse',ascending=True,inplace=True)
     mseDf.to_csv(os.path.join('PA-1','plots',fname))
     return
