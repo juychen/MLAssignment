@@ -35,6 +35,14 @@ def load_dataset():
 
     return polyx,polyy,sampx,sampy
 
+def load_dataset_P2():
+    polyx = load_file(filename = os.path.join('PA-1','PA-1-data-text','count_data_testx.txt'))
+    polyy = load_file(filename = os.path.join('PA-1','PA-1-data-text','count_data_testy.txt'))
+    sampx = load_file(filename = os.path.join('PA-1','PA-1-data-text','count_data_trainx.txt'))
+    sampy = load_file(filename = os.path.join('PA-1','PA-1-data-text','count_data_trainy.txt'))
+
+    return polyx,polyy,sampx,sampy
+
 # transpose 
 def T(x):
     if(len(x.shape)>1):
