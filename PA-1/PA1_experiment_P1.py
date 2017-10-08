@@ -48,11 +48,13 @@ def main():
     outliers_x = [-1.3,0.5,0.7,1]
     outliers_y = [80,30,50,-30]
 
-    mseol_LS = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='LS',plot_title=NAME_MAP['LS']+' with Outliers')
-    mseol_RR = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='RR',plot_title=NAME_MAP['RR']+' with Outliers')
-    mseol_RLS = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS']+' with Outliers')
-    mseol_LASSO = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO']+' with Outliers')
-    mseol_BR = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR']+' with Outliers')
+    mseol_LS,pol_LS = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='LS',plot_title=NAME_MAP['LS']+' with Outliers')
+    mseol_RR,pol_RR = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,method='RR',plot_title=NAME_MAP['RR']+' with Outliers')
+    mseol_RLS,pol_RLS = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_RLS,method='RLS',plot_title=NAME_MAP['RLS']+' with Outliers')
+    mseol_LASSO,pol_LASSO = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_LASSO,method='LASSO',plot_title=NAME_MAP['LASSO']+' with Outliers')
+    mseol_BR,pol_BR = imp.outliers_experiments(polyx,polyy,sampx,sampy,outliers_x,outliers_y,paradict=opt_para_BR,method='BR',plot_title=NAME_MAP['BR']+' with Outliers')
+    ol_mse_map = {'LS':mseol_LS,'RLS':mseol_RLS,'LASSO':mseol_LASSO,'RR':mseol_RR,'BR':mseol_BR}
+    imp.mseMap_toCSV(ol_mse_map,'mse_ol_all.csv')
 
     # higer order imp.experiments
     para_Lambda_o10 = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['poly'],'order':[10]}
