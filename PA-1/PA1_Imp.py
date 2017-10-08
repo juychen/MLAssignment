@@ -234,7 +234,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
 
     plt.close()        
     plt.plot(subset, err, label=plot_title,c='b')
-    plt.ylim((0,100))
+    plt.ylim((0,50))
     plt.legend()
     plt.savefig(os.path.join('PA-1','plots',plot_title+'.jpg'))
     plt.close()
