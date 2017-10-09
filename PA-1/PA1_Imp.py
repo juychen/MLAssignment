@@ -242,14 +242,19 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     return para_err_map,best_para
 
 # Plot learning curve with different data size
-def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve LS',show_plot=True):
+def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve LS',show_plot=True,ylim=0):
     err = []
     if(show_plot==True): plt.plot(polyx, polyy, label='True Function',c='k')
     for size in subset:
         nsamp = int(size*len(sampy))
         err_perround = 0
         for i in range(0,repeat):
-            resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i*17)
+            if(len(sampx.shape)<2):
+                resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i*17)
+            else :
+                resampx, resampy = resample(sampx.T, sampy,n_samples=nsamp,replace=False, random_state=i*17)
+                resampx = resampx.T
+
             round_err,prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(round(size,1)),show_plot=False)
             if(i==0 and show_plot == True):
                 plt.legend()
@@ -269,7 +274,8 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
 
     if(show_plot == True): plt.close()        
     plt.plot(subset, err, label=plot_title,c='b')
-    plt.ylim((0,50))
+    if(ylim !=0):
+        plt.ylim((0,ylim))
     plt.legend()
     plt.savefig(os.path.join('PA-1','plots',plot_title+'.jpg'))
     plt.close()
