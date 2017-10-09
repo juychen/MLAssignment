@@ -28,16 +28,20 @@ def poly_function(x,order = 1):
         row_vect= np.append(row_vect,[1])
         for item in x:
             row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
-
-#        for column in x.T:
-#            row_vect= np.array([])
-#            for item in column:
-#                row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
-#            result = np.append(result, row_vect)
-        
-#        resT = result.reshape(x.shape[1],int(len(result)/x.shape[1])).T
-#        resT = np.vstack((np.ones(x.shape[1]),resT))
         return row_vect
+# define the cross term 2 order 
+def cross_term_function (x):
+
+    row_vect = np.array([])
+    row_vect= np.append(row_vect,[1])
+    
+    tempx = np.array(x)
+    m = np.dot(T(tempx).T,T(tempx))
+    upper_index = np.triu_indices(m.shape[0])
+
+    row_vect= np.append(row_vect,m[upper_index])
+
+    return row_vect
 
 # load file from txt
 def load_file(filename = 'polydata_data_polyx.txt'):
@@ -68,14 +72,18 @@ def T(x):
 
 # x is a set of column vectors, get the transpose form of Φ matrix
 def PHIx(x,order=5,function='poly'):
+    if(function == 'id'):
+        return x
     if(function == 'poly'):
         if(len(x.shape)<2):
             mat = [poly_function(item,order) for item in x ]
         else:
             mat = [poly_function(item,order) for item in x.T ]
         return T(np.array(mat))
-    if(function == 'id'):
-        return x
+    if(function == 'corss'):
+
+        mat = [cross_term_function(item) for item in x.T ]
+        return T(np.array(mat))
 
 # return objective function according to different methods.
 def obj_function(y,PHI,theta,Lambda=0,method='LS'):
@@ -92,6 +100,10 @@ def obj_function(y,PHI,theta,Lambda=0,method='LS'):
 def predict(x,theta,function='poly'):
     if(function=='poly' or function == 'id'):
         PHIX=PHIx(x,order=int((theta.shape[0]-1)/x.shape[0]),function=function)
+        predections = np.dot(T(PHIX),theta)
+        return predections
+    if (function=='cross'):
+        PHIX = PHIx(x,function=function)
         predections = np.dot(T(PHIX),theta)
         return predections
 
@@ -174,6 +186,12 @@ def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 
     if(function=='poly' or function=='id'):
         PHIX = PHIx(x,order=int((miu_theta.shape[0]-1)/x.shape[0]),function=function)
+        miu_star = np.dot(T(PHIX),miu_theta)
+        sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
+        return miu_star,sigma_theta_sqr
+    
+    if (function=='cross'):
+        PHIX = PHIx(x,function=function)
         miu_star = np.dot(T(PHIX),miu_theta)
         sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
         return miu_star,sigma_theta_sqr

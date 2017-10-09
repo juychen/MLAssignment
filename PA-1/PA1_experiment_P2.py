@@ -33,10 +33,13 @@ def main():
             opt_params[key] = opt_para 
         else:
             continue
-        
+
+
+    predict_dict={}        
     for key, value in NAME_MAP.items():
         params = opt_params[key]
         mse,prediction = imp.experiment(testx,testy,trainx,trainy,paradict=params,method=key,plot_title='P2'+value,show_plot=False)
+        predict_dict[key] = prediction        
         mae = imp.mae(testy,prediction)    
         imp.mseMap_toCSV({'mse':mse,'mae':mae},'P2_report'+key+'.csv')
         imp.learning_curve(testx,testy,trainx,trainy,paradict=params,subset=[0.2,0.4,0.6,0.8,1],repeat=10,method=key,plot_title='Learning Curve P2 '+value,show_plot=False)
