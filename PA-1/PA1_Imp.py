@@ -25,14 +25,15 @@ def poly_function(x,order = 1):
         return np.array([m.pow(x,i) for i in range(0,order+1) ])
     else:
         result = np.array([])
-        xT = T(x)
-        for rxT in xT:
-            row_vect= np.array([1])
-            for item in rxT:
+        for column in x.T:
+            row_vect= np.array([])
+            for item in column:
                 row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
-            result = np.vstack((result, row_vect))
-                
-        return result
+            result = np.append(result, row_vect)
+        
+        resT = result.reshape(x.shape[1],int(len(result)/x.shape[1])).T
+        resT = np.vstack((np.ones(x.shape[1]),resT))
+        return resT
         
 
 # load file from txt
