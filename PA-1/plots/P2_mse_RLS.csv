@@ -1,0 +1,7 @@
+,mse
+"{'function': 'id', 'order': 1, 'Lambda': 1}",2.618733922241788
+"{'function': 'id', 'order': 1, 'Lambda': 0.5}",2.650371501037754
+"{'function': 'id', 'order': 1, 'Lambda': 2}",2.7314621757699875
+"{'function': 'id', 'order': 1, 'Lambda': 0.25}",2.7624265605345575
+"{'function': 'id', 'order': 1, 'Lambda': 0.1}",2.918586338831311
+"{'function': 'id', 'order': 1, 'Lambda': 5}",3.146252821445555

@@ -85,7 +85,7 @@ def obj_function(y,PHI,theta,Lambda=0,method='LS'):
 
 # Generate prediction according to the theta
 def predict(x,theta,function='poly'):
-    if(function=='poly'):
+    if(function=='poly' or function == 'id'):
         PHIX=PHIx(x,order=theta.shape[0]-1,function=function)
         predections = np.dot(T(PHIX),theta)
         return predections
@@ -167,7 +167,7 @@ def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
 # define predictive model of Bayesan Regression
 def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 
-    if(function=='poly'):
+    if(function=='poly' or function=='id'):
         PHIX = PHIx(x,order=miu_theta.shape[0]-1,function=function)
         miu_star = np.dot(T(PHIX),miu_theta)
         sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
@@ -242,16 +242,16 @@ def model_selection(polyx,polyy,sampx,sampy,param_dict,estimator='RLS'):
     return para_err_map,best_para
 
 # Plot learning curve with different data size
-def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve LS'):
+def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,method='LS',plot_title='Learning Curve LS',show_plot=True):
     err = []
-    plt.plot(polyx, polyy, label='True Function',c='k')
+    if(show_plot==True): plt.plot(polyx, polyy, label='True Function',c='k')
     for size in subset:
         nsamp = int(size*len(sampy))
         err_perround = 0
         for i in range(0,repeat):
             resampx, resampy = resample(sampx, sampy,n_samples=nsamp,replace=False, random_state=i*17)
             round_err,prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=NAME_MAP[method]+' subset '+str(round(size,1)),show_plot=False)
-            if(i==0):
+            if(i==0 and show_plot == True):
                 plt.legend()
                 plt.plot(polyx, prediction, label=NAME_MAP[method]+' subset '+str(round(size,1)))
                 plt.legend()
@@ -262,11 +262,12 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
             #else :
                 #theta, prediction = experiment(polyx,polyy,resampx,resampy,paradict,method=method,plot_title=method+' '+str(size))
             err_perround += round_err
+        if(show_plot == True):
+            plt.savefig(os.path.join('PA-1','plots',NAME_MAP[method]+' in '+str(repeat)+' rounds.jpg'))
         
-        plt.savefig(os.path.join('PA-1','plots',NAME_MAP[method]+' in '+str(repeat)+' rounds.jpg'))
         err.append(err_perround/repeat)
 
-    plt.close()        
+    if(show_plot == True): plt.close()        
     plt.plot(subset, err, label=plot_title,c='b')
     plt.ylim((0,50))
     plt.legend()
@@ -337,6 +338,11 @@ def outliers_experiments(polyx,polyy,sampx,sampy,olx,oly,paradict={},method='LS'
     return experiment(polyx,polyy,addedx,addedy,paradict=paradict,method=method,plot_title=plot_title)
 
 def mseMap_toCSV(msedict,fname='mse.csv'):
+
+    if(str(type(msedict))!="<class 'dict'>"):
+        mseMap_toCSV({'nohparam':str(msedict)},fname)
+        return 
+
     keys = list(msedict.keys())
     values = list(msedict.values())
     mseDf = pd.DataFrame({'mse':values},index=keys)
