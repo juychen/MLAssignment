@@ -21,13 +21,13 @@ NAME_MAP = {'LS':'Least Square Regression',
 
 # define the polynomial function
 def poly_function(x,order = 1):
-    if(len(x)<2):
-        return np.array([m.pow(x,i) for i in range(0,order+1) ])
+    if(type(x) is not list and type(x) is not np.ndarray):
+        return np.array([pow(x,i) for i in range(0,order+1) ])
     else:
         row_vect = np.array([])
         row_vect= np.append(row_vect,[1])
         for item in x:
-            row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
+            row_vect = np.append(row_vect,np.array([pow(item,i) for i in range(1,order+1) ]))
         return row_vect
 # define the cross term 2 order 
 def cross_term_function (x):
@@ -68,7 +68,7 @@ def T(x):
     if(len(x.shape)>1):
         return np.transpose(x)
     else:
-        return x.reshape(1,x.shape[0])
+        return x.reshape(x.shape[0],1)
 
 # x is a set of column vectors, get the transpose form of Φ matrix
 def PHIx(x,order=5,function='poly'):
@@ -99,7 +99,7 @@ def obj_function(y,PHI,theta,Lambda=0,method='LS'):
 # Generate prediction according to the theta
 def predict(x,theta,function='poly'):
     if(function=='poly' or function == 'id'):
-        PHIX=PHIx(x,order=int((theta.shape[0]-1)/x.shape[0]),function=function)
+        PHIX=PHIx(x,order=int((theta.shape[0]-1)/T(x).T.shape[0]),function=function)
         predections = np.dot(T(PHIX),theta)
         return predections
     if (function=='cross'):
@@ -185,7 +185,7 @@ def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
 def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 
     if(function=='poly' or function=='id'):
-        PHIX = PHIx(x,order=int((miu_theta.shape[0]-1)/x.shape[0]),function=function)
+        PHIX = PHIx(x,order=int((miu_theta.shape[0]-1)/T(x).T.shape[0]),function=function)
         miu_star = np.dot(T(PHIX),miu_theta)
         sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
         return miu_star,sigma_theta_sqr
@@ -306,7 +306,7 @@ def learning_curve(polyx,polyy,sampx,sampy,paradict={},subset=[1],repeat=1,metho
     return err
 
 # Define experiment with certain method and data
-def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression',show_plot=True):
+def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least-squares Regression',show_plot=True,save_theta=False):
     
     prediction= np.array([])
     theta = np.array([])
@@ -322,6 +322,9 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 if(show_plot==True):
                     plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
                 #return theta,SIGMA_theta, prediction,cov
+                if(save_theta == True):
+                    thetaF = pd.DataFrame(theta)
+                    thetaF.to_csv('theta_'+plot_title+'.csv')
                 return mse(prediction,polyy),prediction
 
 
@@ -332,6 +335,9 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 if(show_plot==True):
                     plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title) 
                 #return theta, prediction
+                if(save_theta == True):
+                    thetaF = pd.DataFrame(theta)
+                    thetaF.to_csv('theta_'+plot_title+'.csv')
                 return mse(prediction,polyy),prediction
             
         except Exception as e:
@@ -347,6 +353,9 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
             if(show_plot==True):
                 plot_f_s_std(polyx,polyy,prediction,sampx,sampy,np.sqrt(np.sqrt(cov.diagonal())),label=plot_title)
             #return theta,SIGMA_theta, prediction,cov
+            if(save_theta == True):
+                thetaF = pd.DataFrame(theta)
+                thetaF.to_csv('theta_'+plot_title+'.csv')
             return mse(prediction,polyy),prediction
 
     PHIX = PHIx(sampx)
@@ -354,7 +363,10 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
     prediction = predict(polyx,theta)
     if(show_plot==True):
         plot_f_s(polyx,polyy,prediction,sampx,sampy,label=plot_title)
-
+    
+    if(save_theta == True):
+        thetaF = pd.DataFrame(theta)
+        thetaF.to_csv('theta_'+plot_title+'.csv')
     #return theta, prediction
     return mse(prediction,polyy),prediction
 

@@ -22,7 +22,6 @@ def main():
         
     predict_dict={}        
 
-
     # model selection
     for key, value in NAME_MAP.items():
         
