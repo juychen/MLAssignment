@@ -37,9 +37,9 @@ def cross_term_function (x):
     
     tempx = np.array(x)
     m = np.dot(T(tempx).T,T(tempx))
-    upper_index = np.triu_indices(m.shape[0])
-
+    upper_index = np.triu_indices(m.shape[1])
     row_vect= np.append(row_vect,m[upper_index])
+    #newx = row_vect[1:]
 
     return row_vect
 
