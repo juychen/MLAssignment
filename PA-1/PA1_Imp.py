@@ -34,9 +34,10 @@ def cross_term_function (x):
 
     row_vect = np.array([])
     row_vect= np.append(row_vect,[1])
+    row_vect= np.append(row_vect,x)
     
     tempx = np.array(x)
-    m = np.dot(T(tempx).T,T(tempx))
+    m = np.dot(T(tempx),T(tempx).T)
     upper_index = np.triu_indices(m.shape[1])
     row_vect= np.append(row_vect,m[upper_index])
     #newx = row_vect[1:]
@@ -80,7 +81,7 @@ def PHIx(x,order=5,function='poly'):
         else:
             mat = [poly_function(item,order) for item in x.T ]
         return T(np.array(mat))
-    if(function == 'corss'):
+    if(function == 'cross'):
 
         mat = [cross_term_function(item) for item in x.T ]
         return T(np.array(mat))
