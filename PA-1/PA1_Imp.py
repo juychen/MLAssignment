@@ -21,20 +21,23 @@ NAME_MAP = {'LS':'Least Square Regression',
 
 # define the polynomial function
 def poly_function(x,order = 1):
-    if(len(x.shape)<2):
+    if(len(x)<2):
         return np.array([m.pow(x,i) for i in range(0,order+1) ])
     else:
-        result = np.array([])
-        for column in x.T:
-            row_vect= np.array([])
-            for item in column:
-                row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
-            result = np.append(result, row_vect)
+        row_vect = np.array([])
+        row_vect= np.append(row_vect,[1])
+        for item in x:
+            row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
+
+#        for column in x.T:
+#            row_vect= np.array([])
+#            for item in column:
+#                row_vect = np.append(row_vect,np.array([m.pow(item,i) for i in range(1,order+1) ]))
+#            result = np.append(result, row_vect)
         
-        resT = result.reshape(x.shape[1],int(len(result)/x.shape[1])).T
-        resT = np.vstack((np.ones(x.shape[1]),resT))
-        return resT
-        
+#        resT = result.reshape(x.shape[1],int(len(result)/x.shape[1])).T
+#        resT = np.vstack((np.ones(x.shape[1]),resT))
+        return row_vect
 
 # load file from txt
 def load_file(filename = 'polydata_data_polyx.txt'):
@@ -66,8 +69,10 @@ def T(x):
 # x is a set of column vectors, get the transpose form of Φ matrix
 def PHIx(x,order=5,function='poly'):
     if(function == 'poly'):
-        mat = [poly_function(item,order) for item in x ]
-        #return np.transpose(np.array(mat))
+        if(len(x.shape)<2):
+            mat = [poly_function(item,order) for item in x ]
+        else:
+            mat = [poly_function(item,order) for item in x.T ]
         return T(np.array(mat))
     if(function == 'id'):
         return x
@@ -86,7 +91,7 @@ def obj_function(y,PHI,theta,Lambda=0,method='LS'):
 # Generate prediction according to the theta
 def predict(x,theta,function='poly'):
     if(function=='poly' or function == 'id'):
-        PHIX=PHIx(x,order=theta.shape[0]-1,function=function)
+        PHIX=PHIx(x,order=int((theta.shape[0]-1)/x.shape[0]),function=function)
         predections = np.dot(T(PHIX),theta)
         return predections
 
@@ -168,7 +173,7 @@ def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
 def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
 
     if(function=='poly' or function=='id'):
-        PHIX = PHIx(x,order=miu_theta.shape[0]-1,function=function)
+        PHIX = PHIx(x,order=int((miu_theta.shape[0]-1)/x.shape[0]),function=function)
         miu_star = np.dot(T(PHIX),miu_theta)
         sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
         return miu_star,sigma_theta_sqr

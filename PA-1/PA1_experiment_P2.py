@@ -13,8 +13,8 @@ def main():
     testx,testy,trainx,trainy = imp.load_dataset_P2()
 
     nopara_dict={'function':'id','order':1,'Lambda':0}
-    lambda_candict = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['id'],'order':[1]}
-    BR_candict = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['id'],'order':[1]}
+    lambda_candict = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['id','poly'],'order':[2]}
+    BR_candict = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['id','poly'],'order':[2]}
 
     opt_params = {}
     opt_params['LS'] = nopara_dict
@@ -33,7 +33,6 @@ def main():
             opt_params[key] = opt_para 
         else:
             continue
-        
         
     for key, value in NAME_MAP.items():
         params = opt_params[key]
