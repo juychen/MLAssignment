@@ -107,6 +107,21 @@ def predict(x,theta,function='poly'):
         predections = np.dot(T(PHIX),theta)
         return predections
 
+# define predictive model of Bayesan Regression
+def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
+
+    if(function=='poly' or function=='id'):
+        PHIX = PHIx(x,order=int((miu_theta.shape[0]-1)/T(x).T.shape[0]),function=function)
+        miu_star = np.dot(T(PHIX),miu_theta)
+        sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
+        return miu_star,sigma_theta_sqr
+    
+    if (function=='cross'):
+        PHIX = PHIx(x,function=function)
+        miu_star = np.dot(T(PHIX),miu_theta)
+        sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
+        return miu_star,sigma_theta_sqr
+
 # parameter estimate , all input vectors are column vectors
 def para_estimate(y,PHI,Lambda=0.1,method='LS'):
     if method == 'LS':
@@ -180,22 +195,6 @@ def posterior_BR(x,y,PHI,alpha=0.1,sigma=0.1):
     miu_theta = 1/(sigma*sigma)*np.dot(np.dot(SIGMA_theta,PHI),y) 
     #posterior = multivariate_normal(x,miu_theta,SIGMA_theta)
     return miu_theta,SIGMA_theta
-
-# define predictive model of Bayesan Regression
-def predict_BR(x,miu_theta,SIGMA_theta,function='poly'):
-
-    if(function=='poly' or function=='id'):
-        PHIX = PHIx(x,order=int((miu_theta.shape[0]-1)/T(x).T.shape[0]),function=function)
-        miu_star = np.dot(T(PHIX),miu_theta)
-        sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
-        return miu_star,sigma_theta_sqr
-    
-    if (function=='cross'):
-        PHIX = PHIx(x,function=function)
-        miu_star = np.dot(T(PHIX),miu_theta)
-        sigma_theta_sqr = np.dot(np.dot(T(PHIX),SIGMA_theta),PHIX)
-        return miu_star,sigma_theta_sqr
-
 # Generate Plots 
 def plot_f_s(x,y,pred,sampx,sampy,label):
 
