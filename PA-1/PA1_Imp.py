@@ -324,7 +324,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 #return theta,SIGMA_theta, prediction,cov
                 if(save_theta == True):
                     thetaF = pd.DataFrame(theta)
-                    thetaF.to_csv('theta_'+plot_title+'.csv')
+                    thetaF.to_csv(os.path.join('PA-1','plots','theta_'+plot_title+'.csv'))
                 return mse(prediction,polyy),prediction
 
 
@@ -337,7 +337,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
                 #return theta, prediction
                 if(save_theta == True):
                     thetaF = pd.DataFrame(theta)
-                    thetaF.to_csv('theta_'+plot_title+'.csv')
+                    thetaF.to_csv(os.path.join('PA-1','plots','theta_'+plot_title+'.csv'))
                 return mse(prediction,polyy),prediction
             
         except Exception as e:
@@ -355,7 +355,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
             #return theta,SIGMA_theta, prediction,cov
             if(save_theta == True):
                 thetaF = pd.DataFrame(theta)
-                thetaF.to_csv('theta_'+plot_title+'.csv')
+                thetaF.to_csv(os.path.join('PA-1','plots','theta_'+plot_title+'.csv'))
             return mse(prediction,polyy),prediction
 
     PHIX = PHIx(sampx)
@@ -366,7 +366,7 @@ def experiment(polyx,polyy,sampx,sampy,paradict={},method='LS',plot_title='Least
     
     if(save_theta == True):
         thetaF = pd.DataFrame(theta)
-        thetaF.to_csv('theta_'+plot_title+'.csv')
+        thetaF.to_csv(os.path.join('PA-1','plots','theta_'+plot_title+'.csv'))
     #return theta, prediction
     return mse(prediction,polyy),prediction
 
