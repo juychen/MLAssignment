@@ -14,9 +14,9 @@ NAME_MAP = imp.NAME_MAP
 def main():
     testx,testy,trainx,trainy = imp.load_dataset_P2()
 
-    nopara_dict={'function':'cross','order':1,'Lambda':0}
-    lambda_candict = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['cross'],'order':[2]}
-    BR_candict = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['cross'],'order':[2]}
+    nopara_dict={'function':'id','order':1,'Lambda':0}
+    lambda_candict = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['id'],'order':[1]}
+    BR_candict = {'alpha':[0.1,0.5,1,5],'sigma':[0.1,0.5,1,5],'function':['id'],'order':[1]}
 
     opt_params = {}
     opt_params['LS'] = nopara_dict
@@ -37,11 +37,11 @@ def main():
         #print (key)
         if (key=='RLS' or key =='LASSO'):
             para_err,opt_para = imp.model_selection(testx,testy,trainx,trainy,lambda_candict,estimator=key)
-            imp.mseMap_toCSV(para_err,'P2_mse_cross'+key+'.csv')
+            imp.mseMap_toCSV(para_err,'P2_mse_normal'+key+'.csv')
             opt_params[key] = opt_para      
         elif(key == 'BR'):
             para_err,opt_para = imp.model_selection(testx,testy,trainx,trainy,BR_candict,estimator=key)
-            imp.mseMap_toCSV(para_err,'P2_mse_cross'+key+'.csv')
+            imp.mseMap_toCSV(para_err,'P2_mse_normal'+key+'.csv')
             opt_params[key] = opt_para 
         
         params = opt_params[key]

@@ -1,0 +1,17 @@
+,mse
+"{'function': 'poly', 'order': 6, 'alpha': 0.1, 'sigma': 1}",2.4617519332965956
+"{'function': 'poly', 'order': 6, 'alpha': 5, 'sigma': 5}",2.48510067913454
+"{'function': 'poly', 'order': 6, 'alpha': 0.1, 'sigma': 0.5}",2.5818916107448815
+"{'function': 'poly', 'order': 6, 'alpha': 0.5, 'sigma': 1}",2.623289520834765
+"{'function': 'poly', 'order': 6, 'alpha': 1, 'sigma': 5}",2.631941819497455
+"{'function': 'poly', 'order': 6, 'alpha': 1, 'sigma': 1}",2.7750768247292923
+"{'function': 'poly', 'order': 6, 'alpha': 0.5, 'sigma': 0.5}",2.946952412772194
+"{'function': 'poly', 'order': 6, 'alpha': 0.5, 'sigma': 5}",2.974168664782792
+"{'function': 'poly', 'order': 6, 'alpha': 1, 'sigma': 0.5}",3.1174674420812014
+"{'function': 'poly', 'order': 6, 'alpha': 5, 'sigma': 1}",3.1698175892467044
+"{'function': 'poly', 'order': 6, 'alpha': 0.1, 'sigma': 0.1}",3.3207140538104065
+"{'function': 'poly', 'order': 6, 'alpha': 5, 'sigma': 0.5}",3.4457947496947403
+"{'function': 'poly', 'order': 6, 'alpha': 0.5, 'sigma': 0.1}",3.558893790056536
+"{'function': 'poly', 'order': 6, 'alpha': 1, 'sigma': 0.1}",3.6104539450721487
+"{'function': 'poly', 'order': 6, 'alpha': 5, 'sigma': 0.1}",3.6653766258667693
+"{'function': 'poly', 'order': 6, 'alpha': 0.1, 'sigma': 5}",5.2645132030881605

@@ -1,0 +1,7 @@
+,mse
+"{'function': 'poly', 'order': 6, 'Lambda': 5}",2.546503596157394
+"{'function': 'poly', 'order': 6, 'Lambda': 2}",2.858494082339837
+"{'function': 'poly', 'order': 6, 'Lambda': 1}",3.029421197206524
+"{'function': 'poly', 'order': 6, 'Lambda': 0.5}",3.2702175185973736
+"{'function': 'poly', 'order': 6, 'Lambda': 0.25}",3.463948169680158
+"{'function': 'poly', 'order': 6, 'Lambda': 0.1}",3.602710300901239

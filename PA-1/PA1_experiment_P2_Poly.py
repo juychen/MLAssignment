@@ -27,8 +27,7 @@ def main():
 
     # model selection
 
-    plt.plot(testy, 'ko',label='True Values')
-    plt.legend()
+    
 
 
     for key, value in NAME_MAP.items():
@@ -49,15 +48,18 @@ def main():
         #imp.mseMap_toCSV({'mse':mse,'mae':mae},'P2_report'+key+'.csv')
         errors[key]=[mse,mae]
 
-        
-        plt.plot(prediction,'o',label=key)
+        plt.plot(testy, 'ko',label='True Values')
         plt.legend()
+        plt.plot(np.round(prediction),'o',label=key)
+        plt.legend()
+        plt.savefig(os.path.join('PA-1','plots','poly2_fun'+key+'.jpg'))
+        plt.close()
 
 
         #imp.learning_curve(testx,testy,trainx,trainy,paradict=params,subset=[0.2,0.4,0.6,0.8,1],repeat=10,method=key,plot_title='Learning Curve P2 '+value,show_plot=False)
     epd=pd.DataFrame(errors)
     epd.to_csv(os.path.join('PA-1','plots','err_poly2.csv'))
-    plt.savefig(os.path.join('PA-1','plots','poly2_fun'+'.jpg'))
+    
     
 if __name__ == "__main__":
     main()
