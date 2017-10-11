@@ -11,7 +11,8 @@
 import pa2
 import numpy as np
 import pylab as pl
-import Image
+#mport Image
+from PIL import Image #python3
 import scipy.io as sio
 
 def demo():
