@@ -7,13 +7,11 @@ from numpy.random import shuffle
 from scipy.spatial.distance import euclidean
 from sklearn.utils import resample
 
-
-class Kmeans:
+class ClusterAlgorithm:
     K = 1
     itera = 1 
     z = np.array([]) 
     x = np.array([])
-    miu = np.array([])
     threshold = 0
     N = 0
 
@@ -21,7 +19,18 @@ class Kmeans:
         self.K = k
         self.itera = itera
         self.threshold = threshold
-    
+
+    def fit_x(self,x):
+        self.x=x
+        self.N=len(x)
+        self.z = np.zeros((self.N,self.K))
+        return 
+
+
+class Kmeans(ClusterAlgorithm):
+
+    miu = np.array([])
+  
     def initial_miu(self,pick_index=[]):
         if len(pick_index)==self.K:
             self.miu = self.x[pick_index]
@@ -36,7 +45,6 @@ class Kmeans:
         self.N=len(x)
         self.z = np.zeros((self.N,self.K))
         self.initial_miu()
-
         return 
 
     def cluster(self):
