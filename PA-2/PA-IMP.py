@@ -61,7 +61,7 @@ class Kmeans:
             
             self.z = z.reshape(distance.shape)
 
-            tmiu = np.dot(self.z.T,self.x) / np.sum(self.z,axis=0)[:,None]
+            tmiu = (np.dot(self.z.T,self.x)) / np.sum(self.z,axis=0)[:,None]
 
             if(np.linalg.norm(self.miu-tmiu)<self.threshold):
                 self.miu = tmiu
@@ -73,8 +73,8 @@ class Kmeans:
 
 def main():
 
-     a = Kmeans(k=2,itera=1)
-     a.fit_x (np.array([[1,2,3],[3,4,5],[2,4,1]]))
+     a = Kmeans(k=2,itera=10)
+     a.fit_x (np.array([[1,2,3],[1,5,3],[2,4,1]]))
      #a.initial_miu(pick_index=[0,1])
      print(a.miu)
      a.cluster()
