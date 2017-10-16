@@ -71,20 +71,35 @@ class EMGMM(EMMM):
         EMMM.fit_x(self,x)
         initial_miu(miu_init=miu)
         initial_SIGMA(SIGMA_init=SIGMA)
+        return 
 
     def initial_miu(self,miu_init=[]):
         if(len(pi_init)==self.d):
             self.miu = np.array(miu_init)
         else:
-            self.miu = np.linspace(1.0,2.0,num=self.d)
+            inivalues =  np.linspace(0,self.K,num=(self.K)*self.d)
+            self.miu = inivalues.reshape(self.K,self.d)
         return
 
     def initial_SIGMA(self,SIGMA_init=np.array([])):
         if(SIGMA_init.shape ==(self.d,self.d)):
             self.SIGMA = SIGMA_init
         else:
-            self.SIGMA = np.eye(self.d)
+            eyed = np.eye(self.d)
+            self.SIGMA = np.array([eyed for i in range(0,K)])
         return 
+
+    def cluster(self):
+        if(len(self.x)<1): 
+            print ('no data')
+            return 
+
+        count = 0 
+        while(count<self.itera):
+            count +=1
+            z = np.array([])
+            print()
+        return
          
 class Kmeans(ClusterAlgorithm):
 
