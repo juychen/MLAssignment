@@ -87,7 +87,22 @@ class EMGMM(EMMM):
         else:
             eyed = np.eye(self.d)
             self.SIGMA = np.array([eyed for i in range(0,K)])
-        return 
+            
+        return
+
+    # return the probabilty of each x, dim = N * K
+    # col = probabilty each x.
+    # row = each mixture modelxxx
+    def get_mixture_Gaussian_pdf(x,miu,SIGMA):
+
+        result = np.array([])
+        n = 0
+
+        for j in range(0,miu.shape[0]):
+            result= np.append(result,gaussian(x,miu[j],SIGMA[j]))
+            if j == 0 : n = len(result)
+
+        return result.reshape(miu.shape[0],n).T
 
     def cluster(self):
         if(len(self.x)<1): 
@@ -98,7 +113,15 @@ class EMGMM(EMMM):
         while(count<self.itera):
             count +=1
             z = np.array([])
-            print()
+            
+            # return the probabilty of each x, dim = N * K
+            NG = get_mixture_Gaussian_pdf(self.x,self.miu,self.SIGMA)
+            dpi = np.diag(self.pi)
+
+            scalar = np.dot(NG , dpi)
+            denominator = np.sum(scalar,axis=1)
+            z = (scalar.T/denominator).T                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+
         return
          
 class Kmeans(ClusterAlgorithm):
@@ -152,14 +175,6 @@ class Kmeans(ClusterAlgorithm):
 
 def main():
 
-     a = Kmeans(k=2,itera=10)
-     a.fit_x (np.array([[1,2,3],[1,5,3],[2,4,1]]),pick=[1,2])
-     #a.initial_miu(pick_index=[0,1])
-     print(a.miu)
-     a.cluster()
-
-     print (a.z)
-     print (a.miu)
      return 
 
 
