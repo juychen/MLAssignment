@@ -26,6 +26,27 @@ class ClusterAlgorithm:
         self.z = np.zeros((self.N,self.K))
         return 
 
+class EMMM(ClusterAlgorithm):
+
+    pi = np.array([])
+
+    def fit_x(self,x):
+        ClusterAlgorithm.fit_x(self,x)
+        self.initial_pi()
+        return 
+    
+    def initial_pi(self,pi_init=[]):
+        if(len(pi_init)==self.K):
+            self.pi = np.array(pi_init)
+            return 
+        else:
+            self.pi = np.ones(self.K)/self.K
+            return 
+
+class EMGMM(EMMM):
+    def gaussian(x,miu,SIGMA):
+        return 
+
 
 class Kmeans(ClusterAlgorithm):
 
@@ -36,14 +57,11 @@ class Kmeans(ClusterAlgorithm):
             self.miu = self.x[pick_index]
             return 
         else :
-
             self.miu = resample(self.x,n_samples=self.K,replace=False)
             return 
     
     def fit_x(self,x):
-        self.x=x
-        self.N=len(x)
-        self.z = np.zeros((self.N,self.K))
+        ClusterAlgorithm.fit_x(self,x)
         self.initial_miu()
         return 
 
