@@ -69,12 +69,12 @@ class EMGMM(EMMM):
 
     def fit_x(self,x,miu=[],SIGMA=np.array([])):
         EMMM.fit_x(self,x)
-        initial_miu(miu_init=miu)
-        initial_SIGMA(SIGMA_init=SIGMA)
+        self.initial_miu(miu_init=miu)
+        self.initial_SIGMA(SIGMA_init=SIGMA)
         return 
 
     def initial_miu(self,miu_init=[]):
-        if(len(pi_init)==self.d):
+        if(len(miu_init)==self.d):
             self.miu = np.array(miu_init)
         else:
             inivalues =  np.linspace(0,self.K,num=(self.K)*self.d)
@@ -120,7 +120,9 @@ class EMGMM(EMMM):
 
             scalar = np.dot(NG , dpi)
             denominator = np.sum(scalar,axis=1)
-            z = (scalar.T/denominator).T                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            z = (scalar.T/denominator).T          
+            self.z = z
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
         return
          
@@ -174,8 +176,9 @@ class Kmeans(ClusterAlgorithm):
         return
 
 def main():
-
-     return 
+    
+    GMM = EMGMM()
+    return 
 
 
 if __name__ =="__main__":
