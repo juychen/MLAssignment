@@ -86,7 +86,7 @@ class EMGMM(EMMM):
 
     miu = np.array([])
     SIGMA = np.array([])
-    d = 0
+    d = 1
 
     def __init__(self, k=1, itera=10, threshold=0.005):
         EMMM.__init__(self, k, itera, threshold)
@@ -100,9 +100,12 @@ class EMGMM(EMMM):
 
         return
 
-    def initial_miu(self, miu_init=[]):
+    def initial_miu(self, miu_init=[], sample=True):
         if(len(miu_init) == self.d):
             self.miu = np.array(miu_init)
+
+        elif(sample is True):
+            self.miu = resample(self.x, n_samples=self.K, replace=False,random_state=self.d)
         else:
             avg = np.average(self.x)
             inivalues = np.linspace(avg, self.K, num=(self.K) * self.d)
@@ -231,7 +234,7 @@ class Kmeans(ClusterAlgorithm):
 def main():
 
     GMM = EMGMM(k=3, itera=100)
-    x = np.array([[1, 1], [2, 2], [9, 7], [15, 15], [40, 16]])
+    x = np.array([[1, 1], [2, 2], [9, 7], [15, 15], [140, 140]])
     GMM.fit_x(x)
     print(GMM.d)
     GMM.cluster()
