@@ -91,7 +91,7 @@ class EMGMM(EMMM):
         if(len(miu_init)==self.d):
             self.miu = np.array(miu_init)
         else:
-            inivalues =  np.linspace(0,self.K,num=(self.K)*self.d)
+            inivalues =  np.linspace(1,self.K,num=(self.K)*self.d)
             self.miu = inivalues.reshape(self.K,self.d)
         return
 
