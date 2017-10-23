@@ -238,7 +238,7 @@ class GaussianMeanShift(ClusterAlgorithm):
 
     def __init__(self,itera=10,threshold=0.005,bandwidth=5,kernel='gaussian'):
         ClusterAlgorithm.__init__(self,itera=itera,threshold=threshold)
-        kernel = kernel
+        self.kernel = kernel
         self.h = bandwidth
 
     def fit_x(self,x):
@@ -248,10 +248,20 @@ class GaussianMeanShift(ClusterAlgorithm):
 
     def update(self):
         if(self.kernel=='gaussian'):
-            return
+            dia_sqrh = np.eye(self.d)*(self.h)*(self.h)
+            covs = np.array([dia_sqrh for i in range(0, self.N)])
+
+            # return the probabilty of each x, dim = N * N
+            # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * N (components)
+            sample_gaussians = get_mixture_Gaussian_pdf(
+                self.x, self.x_, covs)
+
+            x_numerator = np.dot(sample_gaussians.T, self.x)
+            x_denominator = np.sum(sample_gaussians, axis=1)
+            x = (x_numerator.T / x_denominator).T
+
+            return x
             
-
-
     def cluster(self):
         if(len(self.x) < 1):
             print('no data')
@@ -259,7 +269,12 @@ class GaussianMeanShift(ClusterAlgorithm):
         count = 0
         while (count<self.itera):
             count += 1
-
+            x_ = self.update()
+            if((np.linalg.norm(self.x_ - x_) < self.threshold)):
+                print(count)
+                self.x_ = x_
+                return
+            self.x_ = x_
         return
     
 
@@ -274,6 +289,11 @@ def main():
     print(GMM.z)
     print(GMM.miu)
     # print(GMM.SIGMA)
+
+    MS = GaussianMeanShift(bandwidth=10,itera=100)
+    MS.fit_x(x)
+    MS.cluster()
+    print(MS.x_)
     return
 
 
