@@ -10,7 +10,9 @@ from scipy.stats import multivariate_normal
 from sklearn.utils import resample
 
 def gaussian(x,miu,SIGMA):
-    return multivariate_normal.pdf(x,miu,SIGMA)
+    miu=np.nan_to_num(miu)
+    SIGMA=np.nan_to_num(SIGMA)
+    return multivariate_normal.pdf(x,miu,SIGMA,allow_singular = True)
 
 
     # return the probabilty of each x, dim = N * K
@@ -91,7 +93,8 @@ class EMGMM(EMMM):
         if(len(miu_init)==self.d):
             self.miu = np.array(miu_init)
         else:
-            inivalues =  np.linspace(1,self.K,num=(self.K)*self.d)
+            avg = np.average(self.x)
+            inivalues =  np.linspace(avg,self.K,num=(self.K)*self.d)
             self.miu = inivalues.reshape(self.K,self.d)
         return
 
@@ -204,11 +207,13 @@ class Kmeans(ClusterAlgorithm):
 def main():
     
     GMM = EMGMM(k=3,dimension=2)
-    x = np.array([[1,2],[7,3],[1,4],[5,6]])
+    x = np.array([[1,1],[2,2],[9,7],[15,15],[17,16]])
     GMM.fit_x(x)
     GMM.cluster()
 
     print (GMM.z)
+
+    print (np.sum(GMM.pi))
     return 
 
 
