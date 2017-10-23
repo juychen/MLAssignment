@@ -30,12 +30,12 @@ def get_mixture_Gaussian_pdf(x,miu,SIGMA):
 
 # transpose 
 def T(x):
-    if(str(type(x))!="<class 'numpy.ndarray'>"):
+    if(hasattr(x,'shape')==False):
         x = np.array(x)
     if(len(x.shape)>1):
         return np.transpose(x)
     else:
-        return x.reshape(x.shape[0],1)
+        return x.reshape(-1,1)
 
 class ClusterAlgorithm:
     K = 1
