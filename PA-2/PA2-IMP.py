@@ -50,6 +50,8 @@ class ClusterAlgorithm:
     x = np.array([])
     threshold = 0
     N = 0
+    d = 1
+
 
     def __init__(self, k=1, itera=10, threshold=0.005):
         self.K = k
@@ -60,6 +62,7 @@ class ClusterAlgorithm:
         """Fit input value of x, input of x is row wise"""
         if(hasattr(x, 'shape') == False):
             x = np.array(x)
+        self.d = x.shape[1]
         self.x = x
         self.N = len(x)
         self.z = np.zeros((self.N, self.K))
@@ -143,7 +146,6 @@ class EMGMM(EMMM):
     """EM Mixture Gaussian Model"""
     miu = np.array([])
     SIGMA = np.array([])
-    d = 1
 
     def __init__(self, k=1, itera=10, threshold=0.005):
         EMMM.__init__(self, k, itera, threshold)
@@ -151,7 +153,6 @@ class EMGMM(EMMM):
     def fit_x(self, x, miu=[], SIGMA=np.array([])):
         """Fit input value of x, input of x is row wise"""
         EMMM.fit_x(self, x)
-        self.d = x.shape[1]
         self.initial_miu(miu_init=miu)
         self.initial_SIGMA(SIGMA_init=SIGMA)
 
@@ -227,6 +228,40 @@ class EMGMM(EMMM):
             self.miu = miu
             self.SIGMA = SIGMA
         return
+
+class GaussianMeanShift(ClusterAlgorithm):
+    """MeanShift clustering algorithm"""
+    h=0 
+    x_ =np.array([])
+    kernel =''
+    # Bandiwith of the kernel
+
+    def __init__(self,itera=10,threshold=0.005,bandwidth=5,kernel='gaussian'):
+        ClusterAlgorithm.__init__(self,itera=itera,threshold=threshold)
+        kernel = kernel
+        self.h = bandwidth
+
+    def fit_x(self,x):
+        ClusterAlgorithm.fit_x(self,x)
+        self.x_ = x
+        return
+
+    def update(self):
+        if(self.kernel=='gaussian'):
+            return
+            
+
+
+    def cluster(self):
+        if(len(self.x) < 1):
+            print('no data')
+            return  
+        count = 0
+        while (count<self.itera):
+            count += 1
+
+        return
+    
 
 
 def main():
