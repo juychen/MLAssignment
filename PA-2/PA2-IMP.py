@@ -51,6 +51,8 @@ class ClusterAlgorithm:
         self.threshold = threshold
 
     def fit_x(self,x):
+        if(hasattr(x,'shape')==False):
+            x = np.array(x)
         self.x=x
         self.N=len(x)
         self.z = np.zeros((self.N,self.K))
@@ -79,9 +81,9 @@ class EMGMM(EMMM):
     SIGMA = np.array([])
     d = 0
 
-    def __init__(self,k=1,itera=10,threshold=0.005,dimension=1):
+    def __init__(self,k=1,itera=10,threshold=0.005):
         EMMM.__init__(self,k,itera,threshold)
-        self.d = dimension
+        self.d = self.x.shape[1]
 
     def fit_x(self,x,miu=[],SIGMA=np.array([])):
         EMMM.fit_x(self,x)
@@ -123,13 +125,16 @@ class EMGMM(EMMM):
                 print(0)
             
             # return the probabilty of each x, dim = N * K
-            NG = get_mixture_Gaussian_pdf(self.x,self.miu,self.SIGMA)
+            # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * K (components)
+            sample_gaussians = get_mixture_Gaussian_pdf(self.x,self.miu,self.SIGMA)
             dpi = np.diag(self.pi)
 
-            scalar = np.dot(NG , dpi)
-            denominator = np.sum(scalar,axis=1)
-            z = (scalar.T/denominator).T          
+            # E step z_ij = pi_j * Gaussian(x_i,theta_j)/ sum_over_k(pi_k * Gaussian(x_i,theta_k))
+            z_numerator = np.dot(sample_gaussians , dpi)
+            z_denominator = np.sum(z_numerator,axis=1)
+            z = (z_numerator.T/z_denominator).T          
 
+            # M step 
             N_j = np.sum(z,axis=0)
             pi = N_j/N
 
@@ -138,6 +143,7 @@ class EMGMM(EMMM):
             SIGMA = [np.dot(((self.x - miu[j]).T * z[:,j]),self.x - miu[j]) for j in range(0,self.K)]
             SIGMA = np.array(SIGMA)
 
+            # Temination of iteration
             if(np.linalg.norm(self.miu-miu)<self.threshold and np.linalg.norm(self.SIGMA-SIGMA)<self.threshold):
                 self.z = z
                 self.miu = miu
@@ -182,6 +188,7 @@ class Kmeans(ClusterAlgorithm):
         
         while(count<self.itera):
 
+            # Cluster Assignment
             z = np.array([])
             count+=1
             distance = np.array([np.linalg.norm(self.x - item,axis=1) for item in self.miu]).T
@@ -194,8 +201,10 @@ class Kmeans(ClusterAlgorithm):
             
             self.z = z.reshape(distance.shape)
 
+            # Estimate center
             tmiu = (np.dot(self.z.T,self.x)) / np.sum(self.z,axis=0)[:,None]
 
+            # Termination of iteration
             if(np.linalg.norm(self.miu-tmiu)<self.threshold):
                 self.miu = tmiu
                 return
@@ -206,7 +215,7 @@ class Kmeans(ClusterAlgorithm):
 
 def main():
     
-    GMM = EMGMM(k=3,dimension=2,itera=50)
+    GMM = EMGMM(k=3,itera=50)
     x = np.array([[1,1],[2,2],[9,7],[15,15],[30,16]])
     GMM.fit_x(x)
     GMM.cluster()
