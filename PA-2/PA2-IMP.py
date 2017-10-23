@@ -142,17 +142,17 @@ class EMGMM(EMMM):
                 self.z = z
                 self.miu = miu
                 self.SIGMA = SIGMA
-
+                print(count)
                 return 
 
             self.z = z
             self.miu = miu
             self.SIGMA = SIGMA
+
         
             #for j in range(0,self.K):
                 #print(j)
                 #SIGMA_j = np.dot(((self.x - miu[j]).T * z[:,j]),self.x - miu[j])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-
         return
          
 class Kmeans(ClusterAlgorithm):
@@ -206,8 +206,8 @@ class Kmeans(ClusterAlgorithm):
 
 def main():
     
-    GMM = EMGMM(k=3,dimension=2)
-    x = np.array([[1,1],[2,2],[9,7],[15,15],[17,16]])
+    GMM = EMGMM(k=3,dimension=2,itera=50)
+    x = np.array([[1,1],[2,2],[9,7],[15,15],[30,16]])
     GMM.fit_x(x)
     GMM.cluster()
 
