@@ -42,9 +42,8 @@ def T(x):
 
 # In our experiment, input of x is row wise
 # shape of x is N * D while N is the number of data point, D is dimension of each data
-
-
 class ClusterAlgorithm:
+    """Base class of of clustering algorithms"""
     K = 1
     itera = 1
     z = np.array([])
@@ -58,6 +57,7 @@ class ClusterAlgorithm:
         self.threshold = threshold
 
     def fit_x(self, x):
+        """Fit input value of x, input of x is row wise"""
         if(hasattr(x, 'shape') == False):
             x = np.array(x)
         self.x = x
@@ -66,6 +66,7 @@ class ClusterAlgorithm:
         return
 
 class Kmeans(ClusterAlgorithm):
+    """K-means clustering heritage cluster algorithm"""
 
     miu = np.array([])
 
@@ -79,12 +80,13 @@ class Kmeans(ClusterAlgorithm):
             return
 
     def fit_x(self, x, pick=[]):
+        """Fit input value of x, input of x is row wise"""
         ClusterAlgorithm.fit_x(self, x)
         self.initial_miu(pick)
         return
 
     def cluster(self):
-
+        """start the clustering procedure"""
         if(len(self.x) < 1):
             print('no data')
             return
@@ -120,10 +122,11 @@ class Kmeans(ClusterAlgorithm):
         return
 
 class EMMM(ClusterAlgorithm):
-
+    """Base class for all EM clustering mixture model"""
     pi = np.array([])
 
     def fit_x(self, x, pi=[]):
+        """Fit input value of x, input of x is row wise"""
         ClusterAlgorithm.fit_x(self, x)
         self.initial_pi(pi)
         return
@@ -137,16 +140,16 @@ class EMMM(ClusterAlgorithm):
             return
 
 class EMGMM(EMMM):
-
+    """EM Mixture Gaussian Model"""
     miu = np.array([])
     SIGMA = np.array([])
     d = 1
 
     def __init__(self, k=1, itera=10, threshold=0.005):
         EMMM.__init__(self, k, itera, threshold)
-        # self.d=dimension
 
     def fit_x(self, x, miu=[], SIGMA=np.array([])):
+        """Fit input value of x, input of x is row wise"""
         EMMM.fit_x(self, x)
         self.d = x.shape[1]
         self.initial_miu(miu_init=miu)
@@ -155,6 +158,7 @@ class EMGMM(EMMM):
         return
 
     def initial_miu(self, miu_init=[], sample=True):
+        """Set initial of miu, you can set value you want, sampling dataset, or average value"""
         if(len(miu_init) == self.d):
             self.miu = np.array(miu_init)
 
