@@ -11,9 +11,13 @@ import PA2_IMP as im
 CLRS = ["c", "b", "m", "r"]
 
 
-def plot_cluster(X, Y, C):
+def plot_cluster(X, Y, C, title = 'title'):
     for x, y, c in zip(X, Y, C):
         plt.scatter(x, y, color=CLRS[(c.astype(int)) - 1])
+    
+
+    plt.title(title)
+    plt.axis([-15, 15, -15, 15])
     plt.show()
     plt.close()
     return
@@ -37,9 +41,25 @@ def main():
     KMA = im.Kmeans(k=4)
     KMA.fit_x(X_A)
     KMA.cluster()
+    KMA_predict = KMA.get_result()
+
     # print(KMA.z)
 
-    plot_cluster(X_A[:, 0], X_A[:, 1], Y_A)
+    #plot_cluster(X_A[:, 0], X_A[:, 1],KMA_predict ,'dataA')
+
+    
+    GMMA = im.EMGMM(k=4, itera=100)
+    GMMA.fit_x(X_A)
+    GMMA.cluster()
+    GMA_predict = GMMA.get_result()
+
+    print(GMMA.z)
+
+    print(GMMA.get_result())
+    
+    plot_cluster(X_A[:, 0], X_A[:, 1],GMA_predict ,'dataA')
+
+    # print(GMM.SIGMA)
 
     print(0)
 

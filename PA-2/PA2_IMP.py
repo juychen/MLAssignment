@@ -94,6 +94,10 @@ class Kmeans(ClusterAlgorithm):
         self.initial_miu(pick)
         return
 
+    def get_result(self):
+        """get cluster result (sigal value)"""
+        return np.argmax(self.z, axis=1)
+
     def cluster(self):
         """start the clustering procedure"""
         if(len(self.x) < 1):
@@ -149,6 +153,10 @@ class EMMM(ClusterAlgorithm):
             self.pi = np.ones(self.K) / self.K
             return
 
+    def get_result(self):
+        """get cluster result (sigal value)"""
+        return np.argmax(self.z, axis=1)
+
 
 class EMGMM(EMMM):
     """EM Mixture Gaussian Model"""
@@ -173,7 +181,7 @@ class EMGMM(EMMM):
 
         elif(sample is True):
             self.miu = resample(self.x, n_samples=self.K,
-                                replace=False, random_state=self.d)
+                                replace=False, random_state=0)
         else:
             avg = np.average(self.x)
             inivalues = np.linspace(avg, self.K, num=(self.K) * self.d)
@@ -201,7 +209,10 @@ class EMGMM(EMMM):
 
         while(count < self.itera):
             count += 1
-            z = np.array([])
+            z = self.z
+            miu =self.miu
+            pi = self.pi
+            SIGMA = self.SIGMA
 
             # return the probabilty of each x, dim = N * K
             # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * K (components)
@@ -229,12 +240,14 @@ class EMGMM(EMMM):
                 self.z = z
                 self.miu = miu
                 self.SIGMA = SIGMA
+                self.pi = pi
                 print(count)
                 return
 
             self.z = z
             self.miu = miu
             self.SIGMA = SIGMA
+            self.pi = pi
         return
 
 
