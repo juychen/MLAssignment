@@ -40,11 +40,14 @@ def T(x):
     else:
         return x.reshape(-1, 1)
 
-def load_file(filename = 'data.txt'):
-    return np.genfromtxt(filename,dtype='double')
+
+def load_file(filename='data.txt'):
+    return np.genfromtxt(filename, dtype='double')
 
 # In our experiment, input of x is row wise
 # shape of x is N * D while N is the number of data point, D is dimension of each data
+
+
 class ClusterAlgorithm:
     """Base class of of clustering algorithms"""
     K = 1
@@ -54,7 +57,6 @@ class ClusterAlgorithm:
     threshold = 0
     N = 0
     d = 1
-
 
     def __init__(self, k=1, itera=10, threshold=0.005):
         self.K = k
@@ -70,6 +72,7 @@ class ClusterAlgorithm:
         self.N = len(x)
         self.z = np.zeros((self.N, self.K))
         return
+
 
 class Kmeans(ClusterAlgorithm):
     """K-means clustering heritage cluster algorithm"""
@@ -127,6 +130,7 @@ class Kmeans(ClusterAlgorithm):
                 self.miu = tmiu
         return
 
+
 class EMMM(ClusterAlgorithm):
     """Base class for all EM clustering mixture model"""
     pi = np.array([])
@@ -144,6 +148,7 @@ class EMMM(ClusterAlgorithm):
         else:
             self.pi = np.ones(self.K) / self.K
             return
+
 
 class EMGMM(EMMM):
     """EM Mixture Gaussian Model"""
@@ -232,26 +237,27 @@ class EMGMM(EMMM):
             self.SIGMA = SIGMA
         return
 
+
 class GaussianMeanShift(ClusterAlgorithm):
     """MeanShift clustering algorithm"""
-    h=0 
-    x_ =np.array([])
-    kernel =''
+    h = 0
+    x_ = np.array([])
+    kernel = ''
     # Bandiwith of the kernel
 
-    def __init__(self,itera=10,threshold=0.005,bandwidth=5,kernel='gaussian'):
-        ClusterAlgorithm.__init__(self,itera=itera,threshold=threshold)
+    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian'):
+        ClusterAlgorithm.__init__(self, itera=itera, threshold=threshold)
         self.kernel = kernel
         self.h = bandwidth
 
-    def fit_x(self,x):
-        ClusterAlgorithm.fit_x(self,x)
+    def fit_x(self, x):
+        ClusterAlgorithm.fit_x(self, x)
         self.x_ = x
         return
 
     def update(self):
-        if(self.kernel=='gaussian'):
-            dia_sqrh = np.eye(self.d)*(self.h)*(self.h)
+        if(self.kernel == 'gaussian'):
+            dia_sqrh = np.eye(self.d) * (self.h) * (self.h)
             covs = np.array([dia_sqrh for i in range(0, self.N)])
 
             # return the probabilty of each x, dim = N * N
@@ -264,13 +270,13 @@ class GaussianMeanShift(ClusterAlgorithm):
             x = (x_numerator.T / x_denominator).T
 
             return x
-            
+
     def cluster(self):
         if(len(self.x) < 1):
             print('no data')
-            return  
+            return
         count = 0
-        while (count<self.itera):
+        while (count < self.itera):
             count += 1
             x_ = self.update()
             if((np.linalg.norm(self.x_ - x_) < self.threshold)):
@@ -279,7 +285,6 @@ class GaussianMeanShift(ClusterAlgorithm):
                 return
             self.x_ = x_
         return
-    
 
 
 def main():
@@ -293,7 +298,7 @@ def main():
     print(GMM.miu)
     # print(GMM.SIGMA)
 
-    MS = GaussianMeanShift(bandwidth=10,itera=100)
+    MS = GaussianMeanShift(bandwidth=10, itera=100)
     MS.fit_x(x)
     MS.cluster()
     print(MS.x_)
