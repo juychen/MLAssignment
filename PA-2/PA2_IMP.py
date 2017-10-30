@@ -40,6 +40,9 @@ def T(x):
     else:
         return x.reshape(-1, 1)
 
+def load_file(filename = 'data.txt'):
+    return np.genfromtxt(filename,dtype='double')
+
 # In our experiment, input of x is row wise
 # shape of x is N * D while N is the number of data point, D is dimension of each data
 class ClusterAlgorithm:
