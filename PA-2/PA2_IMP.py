@@ -58,7 +58,7 @@ class ClusterAlgorithm:
     N = 0
     d = 1
 
-    def __init__(self, k=1, itera=10, threshold=0.005):
+    def __init__(self, k=1, itera=100, threshold=0.005):
         self.K = k
         self.itera = itera
         self.threshold = threshold
@@ -181,7 +181,7 @@ class EMGMM(EMMM):
 
         elif(sample is True):
             self.miu = resample(self.x, n_samples=self.K,
-                                replace=False, random_state=0)
+                                replace=False, random_state=self.d)
         else:
             avg = np.average(self.x)
             inivalues = np.linspace(avg, self.K, num=(self.K) * self.d)
