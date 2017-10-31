@@ -68,14 +68,33 @@ def main():
         plot_cluster(X[:, 0], X[:, 1], GMM.get_result(),
                      'data' + data + '_GMM')
 
-        GMS = im.GaussianMeanShift(bandwidth=5)
-        GMS.fit_x(X)
-        GMS.cluster()
-        exp_dict[(data, 'GMS')] = GMS
-        scl = MinMaxScaler()
-        clrs = scl.fit_transform(np.around(GMS.x_,decimals=2))
+        # GMS = im.GaussianMeanShift(bandwidth=1)
+        # GMS.fit_x(X)
+        # GMS.cluster()
+        # exp_dict[(data, 'GMS')] = GMS
+        # scl = MinMaxScaler()
+        # clrs = scl.fit_transform(np.around(GMS.x_,decimals=0))
 
-        plot_MS(X[:, 0], X[:, 1], clrs, 'data' + data + '_GMS')
+        # plot_MS(X[:, 0], X[:, 1], clrs, 'data' + data + '_GMS')
+    
+    bandwidths = [1,3,10,20,50]
+
+    for band in bandwidths:
+        for data in DATA:
+            X = exp_dict[(data, 'X')]
+            Y = exp_dict[(data, 'Y')]
+            GMS = im.GaussianMeanShift(bandwidth=band)
+            GMS.fit_x(X)
+            GMS.cluster()
+            exp_dict[(data,band,'GMS')] = GMS
+            scl = MinMaxScaler()
+            clrs = scl.fit_transform(np.around(GMS.x_,decimals=0))
+            plot_MS(X[:, 0], X[:, 1], clrs, 'data' + data + '_BD_'+ str(band)+'_GMS')
+
+        
+
+
+    
 
     return
 
