@@ -68,12 +68,12 @@ def main():
         plot_cluster(X[:, 0], X[:, 1], GMM.get_result(),
                      'data' + data + '_GMM')
 
-        GMS = im.GaussianMeanShift(bandwidth=3)
+        GMS = im.GaussianMeanShift(bandwidth=5)
         GMS.fit_x(X)
         GMS.cluster()
         exp_dict[(data, 'GMS')] = GMS
         scl = MinMaxScaler()
-        clrs = scl.fit_transform(np.around(GMS.x_,decimals=0))
+        clrs = scl.fit_transform(np.around(GMS.x_,decimals=2))
 
         plot_MS(X[:, 0], X[:, 1], clrs, 'data' + data + '_GMS')
 
