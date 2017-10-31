@@ -12,7 +12,7 @@ from sklearn.preprocessing import Normalizer
 
 
 
-CLRS = ["c", "b", "m", "r"]
+CLRS = ["g", "b", "m", "r"]
 DATA = ['A', 'B', 'C']
 
 
@@ -38,69 +38,38 @@ def plot_MS(X, Y, C, title='title'):
 
 def main():
 
-    X_A = im.load_file(filename=os.path.join(
-        'PA-2', 'data', 'cluster_data_dataA_X.txt')).T
-    Y_A = im.load_file(filename=os.path.join(
-        'PA-2', 'data', 'cluster_data_dataA_Y.txt')).T
-    X_B = im.load_file(filename=os.path.join(
-        'PA-2', 'data', 'cluster_data_dataB_X.txt')).T
-    Y_B = im.load_file(filename=os.path.join(
-        'PA-2', 'data', 'cluster_data_dataB_Y.txt')).T
-    X_C = im.load_file(filename=os.path.join(
-        'PA-2', 'data', 'cluster_data_dataC_X.txt')).T
-    Y_C = im.load_file(filename=os.path.join(
-        'PA-2', 'data', 'cluster_data_dataC_Y.txt')).T
-
     exp_dict = {}
 
-    # for data in DATA:
-    #     exp_dict[data]['X'] = im.load_file(filename=os.path.join(
-    #         'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
-    #     exp_dict[data]['Y'] = im.load_file(filename=os.path.join(
-    #         'PA-2', 'data', 'cluster_data_data' + data + '_Y.txt')).T
+    for data in DATA:
+        X = im.load_file(filename=os.path.join(
+            'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
+        exp_dict[(data,'X')] = X
 
-    #     KM = im.Kmeans(k=4)
-    #     KM.fit_x(exp_dict[data]['X'])
-    #     KM.cluster()
-    #     exp_dict[data]['KM'] = KM
+        Y = im.load_file(filename=os.path.join(
+            'PA-2', 'data', 'cluster_data_data' + data + '_Y.txt')).T
+        exp_dict[(data,'Y')] = Y
 
-    #     GMM = im.EMGMM(k=4)
-    #     GMM.fit_x(exp_dict[data]['X'])
-    #     GMM.cluster()
-    #     exp_dict[data]['GMM'] = GMM
+        KM = im.Kmeans(k=4)
+        KM.fit_x(X)
+        KM.cluster()
+        exp_dict[(data,'KM')] = KM
 
-    KMA = im.Kmeans(k=4)
-    KMA.fit_x(X_A)
-    KMA.cluster()
-    KMA_predict = KMA.get_result()
+        plot_cluster(X[:, 0], X[:, 1],KM.get_result() ,'data'+data+'_KM')
 
-    # print(KMA.z)
+        GMM = im.EMGMM(k=4)
+        GMM.fit_x(X)
+        GMM.cluster()
+        exp_dict[(data,'GMM')] = GMM
+        plot_cluster(X[:, 0], X[:, 1],GMM.get_result() ,'data'+data+'_GMM')
 
-    # plot_cluster(X_A[:, 0], X_A[:, 1],KMA_predict ,'dataA')
 
-    GMMA = im.EMGMM(k=4, itera=100)
-    GMMA.fit_x(X_A)
-    GMMA.cluster()
-    GMA_predict = GMMA.get_result()
-
-    #print(GMMA.z)
-
-    print(GMMA.get_result())
-
-    #plot_cluster(X_A[:, 0], X_A[:, 1], GMA_predict, 'dataA')
-    # print (Y_A)
-
-    # print(GMM.SIGMA)
-
-    GMSA = im.GaussianMeanShift(bandwidth=2)
-    GMSA.fit_x(X_A)
-    GMSA.cluster()
-    scl = MinMaxScaler()
-    clrs = scl.fit_transform(GMSA.x_)
-    #print(np.round(GMSA.x_))
-
-    plot_MS(X_A[:, 0], X_A[:, 1], clrs, 'dataA')
-
+        GMS = im.GaussianMeanShift(bandwidth=1)
+        GMS.fit_x(X)
+        GMS.cluster()
+        exp_dict[(data,'GMS')] = GMS
+        scl = MinMaxScaler()
+        clrs = scl.fit_transform(GMS.x_)
+        plot_MS(X[:, 0], X[:, 1], clrs, 'data'+data+'_GMS')
 
     print(0)
 
