@@ -92,12 +92,14 @@ def main():
 
     # print(GMM.SIGMA)
 
-    GMSA = im.GaussianMeanShift(bandwidth=5)
+    GMSA = im.GaussianMeanShift(bandwidth=2)
     GMSA.fit_x(X_A)
     GMSA.cluster()
-    print(GMSA.x_)
+    scl = MinMaxScaler()
+    clrs = scl.fit_transform(GMSA.x_)
+    #print(np.round(GMSA.x_))
 
-    #plot_MS(X_A[:, 0], X_A[:, 1], rgclrs, 'dataA')
+    plot_MS(X_A[:, 0], X_A[:, 1], clrs, 'dataA')
 
 
     print(0)

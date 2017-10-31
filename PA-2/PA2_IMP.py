@@ -282,7 +282,7 @@ class GaussianMeanShift(ClusterAlgorithm):
                 self.x, self.x_, covs)
 
             x_numerator=np.dot(sample_gaussians.T, self.x)
-            x_denominator=np.sum(sample_gaussians, axis = 1)
+            x_denominator=np.sum(sample_gaussians, axis = 0)
             x=(x_numerator.T / x_denominator).T
 
             return x
