@@ -57,7 +57,8 @@ def main():
 
     print(GMMA.get_result())
     
-    plot_cluster(X_A[:, 0], X_A[:, 1],GMA_predict ,'dataA')
+    #plot_cluster(X_A[:, 0], X_A[:, 1],GMA_predict ,'dataA')
+    print (Y_A)
 
     # print(GMM.SIGMA)
 

@@ -25,7 +25,7 @@ def get_mixture_Gaussian_pdf(x, miu, SIGMA):
 
     for j in range(0, miu.shape[0]):
         result = np.append(result, gaussian(x, miu[j], SIGMA[j]))
-        #if j == 0 : n = len(result)
+        # if j == 0 : n = len(result)
 
     return result.reshape(-1, n).T
 
@@ -210,7 +210,7 @@ class EMGMM(EMMM):
         while(count < self.itera):
             count += 1
             z = self.z
-            miu =self.miu
+            miu = self.miu
             pi = self.pi
             SIGMA = self.SIGMA
 
@@ -218,10 +218,11 @@ class EMGMM(EMMM):
             # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * K (components)
             sample_gaussians = get_mixture_Gaussian_pdf(
                 self.x, self.miu, self.SIGMA)
-            dpi = np.diag(self.pi)
+            # dpi = np.diag(self.pi)
 
             # E step z_ij = pi_j * Gaussian(x_i,theta_j)/ sum_over_k(pi_k * Gaussian(x_i,theta_k))
-            z_numerator = np.dot(sample_gaussians, dpi)
+            # z_numerator = np.dot(sample_gaussians, dpi)
+            z_numerator = sample_gaussians * pi
             z_denominator = np.sum(z_numerator, axis=1)
             z = (z_numerator.T / z_denominator).T
 
@@ -231,56 +232,58 @@ class EMGMM(EMMM):
 
             miu = ((np.dot(z.T, self.x).T) / N_j).T
 
-            SIGMA = [np.dot(((self.x - miu[j]).T * z[:, j]), self.x - miu[j])
-                     for j in range(0, self.K)]
-            SIGMA = np.array(SIGMA)
+            # SIMGA = 1/N[j] * sum_over_i(z[i][j]*(x[i]-miu[j])(x[i]-miu[j]).T)
+            SIGMA = np.array([np.dot(((self.x - miu[j]).T * z[:, j]), self.x - miu[j])
+                     for j in range(0, self.K)])
+            SIGMA = (SIGMA.T/N_j).T
+
 
             # Temination of iteration
             if((np.linalg.norm(self.miu - miu) < self.threshold) and (np.linalg.norm(self.SIGMA - SIGMA) < self.threshold)):
-                self.z = z
-                self.miu = miu
-                self.SIGMA = SIGMA
-                self.pi = pi
+                self.z=z
+                self.miu=miu
+                self.SIGMA=SIGMA
+                self.pi=pi
                 print(count)
                 return
 
-            self.z = z
-            self.miu = miu
-            self.SIGMA = SIGMA
-            self.pi = pi
+            self.z=z
+            self.miu=miu
+            self.SIGMA=SIGMA
+            self.pi=pi
         return
 
 
 class GaussianMeanShift(ClusterAlgorithm):
     """MeanShift clustering algorithm"""
-    h = 0
-    x_ = np.array([])
-    kernel = ''
+    h=0
+    x_=np.array([])
+    kernel=''
     # Bandiwith of the kernel
 
-    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian'):
-        ClusterAlgorithm.__init__(self, itera=itera, threshold=threshold)
-        self.kernel = kernel
-        self.h = bandwidth
+    def __init__(self, itera = 10, threshold = 0.005, bandwidth = 5, kernel = 'gaussian'):
+        ClusterAlgorithm.__init__(self, itera = itera, threshold = threshold)
+        self.kernel=kernel
+        self.h=bandwidth
 
     def fit_x(self, x):
         ClusterAlgorithm.fit_x(self, x)
-        self.x_ = x
+        self.x_=x
         return
 
     def update(self):
         if(self.kernel == 'gaussian'):
-            dia_sqrh = np.eye(self.d) * (self.h) * (self.h)
-            covs = np.array([dia_sqrh for i in range(0, self.N)])
+            dia_sqrh=np.eye(self.d) * (self.h) * (self.h)
+            covs=np.array([dia_sqrh for i in range(0, self.N)])
 
             # return the probabilty of each x, dim = N * N
             # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * N (components)
-            sample_gaussians = get_mixture_Gaussian_pdf(
+            sample_gaussians=get_mixture_Gaussian_pdf(
                 self.x, self.x_, covs)
 
-            x_numerator = np.dot(sample_gaussians.T, self.x)
-            x_denominator = np.sum(sample_gaussians, axis=1)
-            x = (x_numerator.T / x_denominator).T
+            x_numerator=np.dot(sample_gaussians.T, self.x)
+            x_denominator=np.sum(sample_gaussians, axis = 1)
+            x=(x_numerator.T / x_denominator).T
 
             return x
 
@@ -288,22 +291,22 @@ class GaussianMeanShift(ClusterAlgorithm):
         if(len(self.x) < 1):
             print('no data')
             return
-        count = 0
+        count=0
         while (count < self.itera):
             count += 1
-            x_ = self.update()
+            x_=self.update()
             if((np.linalg.norm(self.x_ - x_) < self.threshold)):
                 print(count)
-                self.x_ = x_
+                self.x_=x_
                 return
-            self.x_ = x_
+            self.x_=x_
         return
 
 
 def main():
 
-    GMM = EMGMM(k=3, itera=100)
-    x = np.array([[1, 1], [2, 2], [9, 7], [15, 15], [105, 5]])
+    GMM=EMGMM(k = 3, itera = 100)
+    x=np.array([[1, 1], [2, 2], [9, 7], [15, 15], [105, 5]])
     GMM.fit_x(x)
     GMM.cluster()
 
@@ -311,7 +314,7 @@ def main():
     print(GMM.miu)
     # print(GMM.SIGMA)
 
-    MS = GaussianMeanShift(bandwidth=10, itera=100)
+    MS=GaussianMeanShift(bandwidth = 10, itera = 100)
     MS.fit_x(x)
     MS.cluster()
     print(MS.x_)
