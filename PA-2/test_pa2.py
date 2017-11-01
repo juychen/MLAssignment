@@ -11,6 +11,7 @@
 import pa2
 import numpy as np
 import pylab as pl
+import os
 #mport Image
 from PIL import Image #python3
 import scipy.io as sio
@@ -19,7 +20,7 @@ def demo():
     import scipy.cluster.vq as vq
 
     ## load and show image
-    img = Image.open('images/12003.jpg')
+    img = Image.open(os.path.join('PA-2','data','images','12003.jpg'))
     pl.subplot(1,3,1)
     pl.imshow(img)
     
