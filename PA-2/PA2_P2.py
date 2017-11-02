@@ -32,13 +32,13 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        KM = im.WeightedKmeans4D(k=3)
+        KM = im.GaussianMeanShift(bandwidth=3, itera=10)
         KM.fit_x(X)
         KM.cluster()
         exp_dict[(data, 'KM')] = KM
 
         Y = KM.get_result() + 1
-        C = KM.miu
+        #C = KM.miu
 
         # GMM = im.EMGMM(k=4)
         # GMM.fit_x(X)
@@ -52,6 +52,7 @@ def main():
         csegm = pa2.colorsegms(segm, img)
         pl.subplot(2,3,3)
         pl.imshow(csegm)
+        pl.savefig('test.jpg')
         pl.show()
 
 

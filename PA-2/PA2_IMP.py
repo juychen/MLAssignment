@@ -7,6 +7,7 @@ from numpy.random import shuffle
 from scipy.spatial.distance import euclidean
 from scipy.stats import multivariate_normal
 from sklearn.utils import resample
+from sklearn import preprocessing
 
 
 def gaussian(x, miu, SIGMA):
@@ -328,9 +329,9 @@ class GaussianMeanShift(ClusterAlgorithm):
     x_ = np.array([])
     kernel = ''
     tolarance = 0
-    # tolarance of result outputing, it is the decemal 
+    # tolarance of result outputing, it is the decemal
 
-    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian', tolrance = 0):
+    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian', tolarance=0):
         ClusterAlgorithm.__init__(self, itera=itera, threshold=threshold)
         self.kernel = kernel
         self.h = bandwidth
@@ -373,31 +374,35 @@ class GaussianMeanShift(ClusterAlgorithm):
         return
 
     def get_result(self):
-        roundx = np.around(GMS.x_,decimals=self.tolarance)
-        return
+        roundx = np.around(self.x_, decimals=self.tolarance)
+        strx = roundx.astype(str)
+        strxj = [",".join(item) for item in strx]
+        le = preprocessing.LabelEncoder()
+        result = le.fit_transform(strxj)
+        return result
 
 
 def main():
 
     KM = WeightedKmeans4D(k=2, itera=100)
     x = np.array([[1, 1, 2, 2], [9, 7, 15, 15], [1, 2, 3, 4]])
-    KM.fit_x(x)
-    KM.cluster()
-    print(KM.z)
+    # KM.fit_x(x)
+    # KM.cluster()
+    # print(KM.z)
 
-    GMM = EMGMM(k=3, itera=100)
+    # GMM = EMGMM(k=3, itera=100)
     x = np.array([[1, 1], [2, 2], [9, 7], [15, 15], [105, 5]])
-    GMM.fit_x(x)
-    GMM.cluster()
+    # GMM.fit_x(x)
+    # GMM.cluster()
 
-    print(GMM.z)
-    print(GMM.miu)
+    # print(GMM.z)
+    # print(GMM.miu)
     # print(GMM.SIGMA)
 
-    MS = GaussianMeanShift(bandwidth=10, itera=100)
+    MS = GaussianMeanShift(bandwidth=3, itera=100)
     MS.fit_x(x)
     MS.cluster()
-    print(MS.x_)
+    print(MS.get_result())
     return
 
 
