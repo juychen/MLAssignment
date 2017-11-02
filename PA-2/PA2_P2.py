@@ -22,7 +22,7 @@ def main():
     for data in DATA[:5]:
 
         img = Image.open(os.path.join(IMGPATH, data))
-        pl.subplot(1, 3, 1)
+        pl.subplot(2, 3, 1)
         pl.imshow(img)
 
         X_raw, L = pa2.getfeatures(img, 7)
@@ -32,25 +32,30 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        KM = im.Kmeans(k=2)
-        KM.fit_x(X)
-        KM.cluster()
-        exp_dict[(data, 'KM')] = KM
+        # KM = im.WeightedKmeans4D(k=3)
+        # KM.fit_x(X)
+        # KM.cluster()
+        # exp_dict[(data, 'KM')] = KM
+        # Y = KM.get_result() + 1
+        # C = KM.miu
 
-        Y = KM.get_result() + 1
-        C = KM.miu
+        MS = im.GaussianMeanShift(bandwidth=3)
+        MS.fit_x(X)
+        MS.cluster()
+        Y = MS.x_
+
 
         # GMM = im.EMGMM(k=4)
         # GMM.fit_x(X)
         # GMM.cluster()
         # exp_dict[(data, 'GMM')] = GMM
         segm = pa2.labels2seg(Y,L)
-        pl.subplot(1,3,2)
+        pl.subplot(2,3,2)
         pl.imshow(segm)
     
         # color the segmentation image
         csegm = pa2.colorsegms(segm, img)
-        pl.subplot(1,3,3)
+        pl.subplot(2,3,3)
         pl.imshow(csegm)
         pl.show()
 
