@@ -152,24 +152,24 @@ class WeightedKmeans4D(Kmeans):
         """
         if(self.d != 4):
             print('it is not a 4 - dimensional data clustering')
-            return 
+            return
 
         minus = a - b
 
-        left = np.square(np.linalg.norm(minus[:,:2],axis=1)) 
-        right = np.square(np.linalg.norm(minus[:,2:],axis=1)) 
+        left = np.square(np.linalg.norm(minus[:, :2], axis=1))
+        right = np.square(np.linalg.norm(minus[:, 2:], axis=1))
 
-        return left + right
+        return left + self.Lambda * right
 
     def cluster(self):
         """start the clustering procedure"""
         if(len(self.x) < 1):
             print('no data')
             return
-        
+
         if(self.d != 4):
             print('it is not a 4 - dimensional data clustering')
-            return 
+            return
 
         count = 0
 
@@ -179,7 +179,7 @@ class WeightedKmeans4D(Kmeans):
             z = np.array([])
             count += 1
             distance = np.array(
-                [self.weighted_distance_4d(self.x,item) for item in self.miu]).T
+                [self.weighted_distance_4d(self.x, item) for item in self.miu]).T
 
             for item in distance:
                 midx = np.argmin(item)
@@ -372,7 +372,7 @@ class GaussianMeanShift(ClusterAlgorithm):
 def main():
 
     KM = WeightedKmeans4D(k=2, itera=100)
-    x = np.array([[1, 1, 2, 2], [9, 7, 15, 15], [1,2,3,4]])
+    x = np.array([[1, 1, 2, 2], [9, 7, 15, 15], [1, 2, 3, 4]])
     KM.fit_x(x)
     KM.cluster()
     print(KM.z)
