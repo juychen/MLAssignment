@@ -32,18 +32,13 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        # KM = im.WeightedKmeans4D(k=3)
-        # KM.fit_x(X)
-        # KM.cluster()
-        # exp_dict[(data, 'KM')] = KM
-        # Y = KM.get_result() + 1
-        # C = KM.miu
+        KM = im.WeightedKmeans4D(k=3)
+        KM.fit_x(X)
+        KM.cluster()
+        exp_dict[(data, 'KM')] = KM
 
-        MS = im.GaussianMeanShift(bandwidth=3)
-        MS.fit_x(X)
-        MS.cluster()
-        Y = MS.x_
-
+        Y = KM.get_result() + 1
+        C = KM.miu
 
         # GMM = im.EMGMM(k=4)
         # GMM.fit_x(X)

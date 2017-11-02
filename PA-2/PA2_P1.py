@@ -89,19 +89,14 @@ def main():
             exp_dict[(data,band,'GMS')] = GMS
             xh = GMS.x_
             
-            KM2 = im.Kmeans(k=4)
-            KM2.fit_x(xh)
-            KM2.cluster()
-            plot_cluster(X[:, 0], X[:, 1], KM2.get_result(), 'data' + data + '_BD_'+ str(band)+'_GMS_KM')
+            # KM2 = im.Kmeans(k=4)
+            # KM2.fit_x(xh)
+            # KM2.cluster()
+            # plot_cluster(X[:, 0], X[:, 1], KM2.get_result(), 'data' + data + '_BD_'+ str(band)+'_GMS_KM')
 
             scl = MinMaxScaler()
             clrs = scl.fit_transform(np.around(GMS.x_,decimals=0))
             plot_MS(X[:, 0], X[:, 1], clrs, 'data' + data + '_BD_'+ str(band)+'_GMS')
-
-        
-
-
-    
 
     return
 

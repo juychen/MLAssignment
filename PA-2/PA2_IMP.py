@@ -323,14 +323,18 @@ class EMGMM(EMMM):
 class GaussianMeanShift(ClusterAlgorithm):
     """MeanShift clustering algorithm"""
     h = 0
-    x_ = np.array([])
-    kernel = ''
     # Bandiwith of the kernel
 
-    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian'):
+    x_ = np.array([])
+    kernel = ''
+    tolarance = 0
+    # tolarance of result outputing, it is the decemal 
+
+    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian', tolrance = 0):
         ClusterAlgorithm.__init__(self, itera=itera, threshold=threshold)
         self.kernel = kernel
         self.h = bandwidth
+        self.tolarance = tolarance
 
     def fit_x(self, x):
         ClusterAlgorithm.fit_x(self, x)
@@ -366,6 +370,10 @@ class GaussianMeanShift(ClusterAlgorithm):
                 self.x_ = x_
                 return
             self.x_ = x_
+        return
+
+    def get_result(self):
+        roundx = np.around(GMS.x_,decimals=self.tolarance)
         return
 
 
