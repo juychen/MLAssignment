@@ -1,0 +1,8 @@
+ID      = $(Cluster)_$(Process)_$(Date)
+Universe   = vanilla
+Executable = RUNME.sh
+Arguments  = $(ID) 
+Log        = workspace/$(ID).log
+Output     = workspace/$(ID).out
+Error      = workspace/$(ID).err
+Queue
