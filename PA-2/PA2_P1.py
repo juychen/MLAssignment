@@ -11,13 +11,13 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import Normalizer
 
 
-CLRS = ["g", "b", "m", "r"]
+CLRS = ["r", "g", "b", "c","y","m","k"]
 DATA = ['A', 'B', 'C']
 
 
 def plot_cluster(X, Y, C, title='title'):
     for x, y, c in zip(X, Y, C):
-        plt.scatter(x, y, color=CLRS[(c.astype(int)) - 1])
+        plt.scatter(x, y, color=CLRS[(c.astype(int))])
 
     plt.title(title)
     plt.axis([-15, 15, -15, 15])
@@ -77,7 +77,7 @@ def main():
 
         # plot_MS(X[:, 0], X[:, 1], clrs, 'data' + data + '_GMS')
     
-    bandwidths = [1,3,10,20,50]
+    bandwidths = [3,10,20,50]
 
     for band in bandwidths:
         for data in DATA:
@@ -92,7 +92,9 @@ def main():
             # KM2 = im.Kmeans(k=4)
             # KM2.fit_x(xh)
             # KM2.cluster()
-            # plot_cluster(X[:, 0], X[:, 1], KM2.get_result(), 'data' + data + '_BD_'+ str(band)+'_GMS_KM')
+            #plot_cluster(X[:, 0], X[:, 1], GMS.get_result(), 'data' + data + '_BD_'+ str(band)+'_GMS_KM')
+
+            #print(GMS.get_result())
 
             scl = MinMaxScaler()
             clrs = scl.fit_transform(np.around(GMS.x_,decimals=0))

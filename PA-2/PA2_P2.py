@@ -19,7 +19,7 @@ DATA = os.listdir(IMGPATH)
 def main():
     exp_dict = {}
 
-    for data in DATA[:5]:
+    for data in DATA[:1]:
 
         img = Image.open(os.path.join(IMGPATH, data))
         pl.subplot(2, 3, 1)
@@ -32,7 +32,7 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        KM = im.GaussianMeanShift(bandwidth=3, itera=10)
+        KM = im.GaussianMeanShift(bandwidth=3,itera=10)
         KM.fit_x(X)
         KM.cluster()
         exp_dict[(data, 'KM')] = KM
@@ -60,4 +60,5 @@ def main():
 
 
 if __name__ == "__main__":
+    pl.switch_backend('agg')
     main()
