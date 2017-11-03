@@ -374,7 +374,8 @@ class GaussianMeanShift(ClusterAlgorithm):
         return
 
     def get_result(self):
-        roundx = np.around(self.x_, decimals=self.tolarance)
+        x_ =self.x_
+        roundx = np.around(x_, decimals=self.tolarance)
         strx = roundx.astype(str)
         strxj = [",".join(item) for item in strx]
         le = preprocessing.LabelEncoder()
