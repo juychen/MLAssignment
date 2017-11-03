@@ -13,6 +13,8 @@ import scipy.cluster.vq as vq
 
 
 IMGPATH = os.path.join('PA-2', 'data', 'images')
+OUTPATH = os.path.join('PA-2', 'data', 'processed')
+
 DATA = os.listdir(IMGPATH)
 
 
@@ -32,7 +34,7 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        KM = im.GaussianMeanShift(bandwidth=1,tolarance=2)
+        KM = im.GaussianMeanShift(bandwidth=3,tolarance=2)
         KM.fit_x(X)
         KM.cluster()
         exp_dict[(data, 'KM')] = KM
@@ -53,7 +55,7 @@ def main():
         csegm = pa2.colorsegms(segm, img)
         pl.subplot(2,3,3)
         pl.imshow(csegm)
-        pl.savefig('test.jpg')
+        pl.savefig(os.path.join(OUTPATH,data+'_processed.jpg'))
         pl.show()
 
 
