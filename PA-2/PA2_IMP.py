@@ -399,9 +399,10 @@ def main():
     # print(GMM.miu)
     # print(GMM.SIGMA)
 
-    MS = GaussianMeanShift(bandwidth=3, itera=100)
+    MS = GaussianMeanShift(bandwidth=3, itera=100, tolarance=1)
     MS.fit_x(x)
     MS.cluster()
+    print(MS.x_)
     print(MS.get_result())
     return
 
