@@ -39,6 +39,7 @@ def main():
 
         Y = KM.get_result() + 1
         #C = KM.miu
+        print(Y)
 
         # GMM = im.EMGMM(k=4)
         # GMM.fit_x(X)
