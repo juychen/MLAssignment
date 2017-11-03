@@ -34,7 +34,7 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        KM = im.GaussianMeanShift(bandwidth=3,tolarance=4,itera=5)
+        KM = im.GaussianMeanShift(bandwidth=1.5,tolarance=4,itera=5)
         KM.fit_x(X)
         KM.cluster()
         exp_dict[(data, 'KM')] = KM
