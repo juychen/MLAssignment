@@ -34,12 +34,12 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        KM = im.GaussianMeanShift(bandwidth=2,tolarance=3,itera=5)
+        KM = im.GaussianMeanShift(bandwidth=3,tolarance=4,itera=5)
         KM.fit_x(X)
         KM.cluster()
         exp_dict[(data, 'KM')] = KM
 
-        np.savetxt(os.path.join(OUTPATH,data+'_meansh.txt'),KM.x_,fmt='%d')
+        np.savetxt(os.path.join(OUTPATH,data+'_meansh.txt'),KM.x_)
 
         Y = KM.get_result() + 1
         #C = KM.miu
