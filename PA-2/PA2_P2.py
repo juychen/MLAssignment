@@ -39,6 +39,8 @@ def main():
         KM.cluster()
         exp_dict[(data, 'KM')] = KM
 
+        np.savetxt(os.path.join(OUTPATH,data+'_meansh.txt'),KM.x_,fmt='%d')
+
         Y = KM.get_result() + 1
         #C = KM.miu
         print(Y)
