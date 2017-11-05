@@ -415,7 +415,7 @@ class WeightGMeanshift(GaussianMeanShift):
             chdim = int((self.d) / 2)
             # this method change the covariance to a non isotropic one 
             # by modifieng the cov matrix
-            # 2 times faster than multipy two gaussians.
+            # 2 times faster than multiping two gaussians.
             dia_sqrhp = np.ones(chdim) * ((self.h) ** 2)
             dia_sqrhc = np.ones(chdim) * ((self.hc) ** 2)
 
@@ -440,35 +440,6 @@ class WeightGMeanshift(GaussianMeanShift):
 
             return x
 
-        if(self.kernel == 'weighted_gaussian_v2'):
-
-            chdim = int((self.d) / 2)
-            # chrominance dimsion is dim 0 and dim 1,
-            # cordinate dimension is dim 2 and dim 3
-
-            dia_sqrhp = np.eye(chdim) * (self.h) * (self.h)
-            covhp = np.array([dia_sqrhp for i in range(0, self.N)])
-
-            dia_sqrhc = np.eye(chdim) * (self.hc) * (self.hc)
-            covhc = np.array([dia_sqrhc for i in range(0, self.N)])
-
-            # return the probabilty of each x, dim = N * N
-            # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * N (components)
-            G_hp = get_mixture_Gaussian_pdf(
-                self.x[:, :chdim], self.x_[:, :chdim], covhp)
-
-            G_hc = get_mixture_Gaussian_pdf(
-                self.x[:, chdim:], self.x_[:, chdim:], covhc)
-
-            sample_gaussians = G_hp * G_hc
-
-            x_numerator = np.dot(sample_gaussians.T, self.x)
-            x_denominator = np.sum(sample_gaussians, axis=0)
-            x = (x_numerator.T / x_denominator).T
-
-            return x
-
-
 def main():
 
     KM = WeightedKmeans4D(k=2, itera=100)
@@ -487,7 +458,7 @@ def main():
     # print(GMM.SIGMA)
 
     MS = WeightGMeanshift(chrominance_bandwidth=3,
-                          location_bandwidth=5, itera=5, tolarance=1,kernel='weighted_gaussian')
+                          location_bandwidth=5, itera=1, tolarance=1)
     MS.fit_x(x)
     MS.cluster()
     print(MS.x_)
