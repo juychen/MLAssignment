@@ -52,16 +52,16 @@ def main():
             pl.savefig(os.path.join(OUTPATH, data + '_GMS_' + str(bd) + '_processed.jpg'))
             pl.show()
 
-    for data in DATA:
+    for data2 in DATA:
 
-        img = Image.open(os.path.join(IMGPATH, data))
+        img = Image.open(os.path.join(IMGPATH, data2))
         pl.subplot(1, 3, 1)
         pl.imshow(img)
 
         X_raw, L = pa2.getfeatures(img, 7)
         X = vq.whiten(X_raw.T)
 
-        exp_dict[(data, 'X')] = X
+        exp_dict[(data2, 'X')] = X
         
         for bdp in BANDS:
             for bdc in BANDS:
