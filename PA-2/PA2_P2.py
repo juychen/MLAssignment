@@ -17,6 +17,8 @@ OUTPATH = os.path.join('PA-2', 'data', 'processed')
 
 DATA = os.listdir(IMGPATH)
 
+METHODS = ['KM','EMGMM','WKM','GMS','WGMS']
+
 
 def main():
     exp_dict = {}
@@ -24,15 +26,16 @@ def main():
     for data in DATA[:1]:
 
         img = Image.open(os.path.join(IMGPATH, data))
-        pl.subplot(2, 3, 1)
+        pl.subplot(1, 3, 1)
         pl.imshow(img)
 
         X_raw, L = pa2.getfeatures(img, 7)
         X = vq.whiten(X_raw.T)
 
-        # X = im.load_file(filename=os.path.join(
-        #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
+
+        for method in METHODS[:3]:
+            
 
         KM = im.WeightGMeanshift(chrominance_bandwidth=4,location_bandwidth=10,itera=5)
         KM.fit_x(X)
@@ -50,12 +53,12 @@ def main():
         # GMM.cluster()
         # exp_dict[(data, 'GMM')] = GMM
         segm = pa2.labels2seg(Y,L)
-        pl.subplot(2,3,2)
+        pl.subplot(1,3,2)
         pl.imshow(segm)
     
         # color the segmentation image
         csegm = pa2.colorsegms(segm, img)
-        pl.subplot(2,3,3)
+        pl.subplot(1,3,3)
         pl.imshow(csegm)
         pl.savefig(os.path.join(OUTPATH,data+'_processed.jpg'))
         pl.show()
