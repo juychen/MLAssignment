@@ -331,7 +331,7 @@ class GaussianMeanShift(ClusterAlgorithm):
     tolarance = 0
     # tolarance of result outputing, it is the decemal
 
-    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian', tolarance=0):
+    def __init__(self, itera=10, threshold=0.005, bandwidth=5, kernel='gaussian', tolarance=5):
         ClusterAlgorithm.__init__(self, itera=itera, threshold=threshold)
         self.kernel = kernel
         self.h = bandwidth
@@ -374,13 +374,67 @@ class GaussianMeanShift(ClusterAlgorithm):
         return
 
     def get_result(self):
-        x_ =self.x_
+        """
+         round the x_ value using a specific decimal value
+         encode different rounding results to 0 - n classes
+         n is not fixed
+        """
+        x_ = self.x_
         roundx = np.around(x_, decimals=self.tolarance)
         strx = roundx.astype(str)
         strxj = [",".join(item) for item in strx]
         le = preprocessing.LabelEncoder()
         result = le.fit_transform(strxj)
         return result
+
+
+class WeightGMeanshift(GaussianMeanShift):
+    hc = 0
+
+    def __init__(self, chrominance_bandwidth=5, location_bandwidth=5, itera=10, threshold=0.005, kernel='weighted_gaussian', tolarance=5):
+        GaussianMeanShift.__init__(self, itera=itera, bandwidth=chrominance_bandwidth,
+                                   threshold=threshold, kernel=kernel, tolarance=tolarance)
+        self.hc = location_bandwidth
+
+    def fit_x(self, x):
+        GaussianMeanShift.fit_x(self, x)
+        if (self.d != 4):
+            print('not 4 -dmiensional ')
+
+    def update(self):
+        """
+            weighted gaussian is 
+            put first d/2 diemnsion in to Gaussian_hp with covariance hp**2 
+            put last d/2 diemnsion in to Gaussian_hc with covariance hc**2 
+            weighted gaussian return pdf_hp * pdf_hc
+        """
+        if(self.kernel == 'weighted_gaussian'):
+
+            chdim = int((self.d) / 2)
+            # chrominance dimsion is dim 0 and dim 1,
+            # cordinate dimension is dim 2 and dim 3
+
+            dia_sqrhp = np.eye(chdim) * (self.h) * (self.h)
+            covhp = np.array([dia_sqrhp for i in range(0, self.N)])
+
+            dia_sqrhc = np.eye(chdim) * (self.hc) * (self.hc)
+            covhc = np.array([dia_sqrhc for i in range(0, self.N)])
+
+            # return the probabilty of each x, dim = N * N
+            # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * N (components)
+            G_hp = get_mixture_Gaussian_pdf(
+                self.x[:, :chdim], self.x_[:, :chdim], covhp)
+
+            G_hc = get_mixture_Gaussian_pdf(
+                self.x[:, chdim:], self.x_[:, chdim:], covhc)
+
+            sample_gaussians = G_hp * G_hc
+
+            x_numerator = np.dot(sample_gaussians.T, self.x)
+            x_denominator = np.sum(sample_gaussians, axis=0)
+            x = (x_numerator.T / x_denominator).T
+
+            return x
 
 
 def main():
@@ -392,7 +446,7 @@ def main():
     # print(KM.z)
 
     # GMM = EMGMM(k=3, itera=100)
-    x = np.array([[1, 1], [2, 2], [9, 7], [15, 15], [105, 5]])
+    #x = np.array([[1, 1], [2, 2], [9, 7], [15, 15], [105, 5]])
     # GMM.fit_x(x)
     # GMM.cluster()
 
@@ -400,7 +454,7 @@ def main():
     # print(GMM.miu)
     # print(GMM.SIGMA)
 
-    MS = GaussianMeanShift(bandwidth=3, itera=100, tolarance=1)
+    MS = WeightGMeanshift(chrominance_bandwidth=3,location_bandwidth=5, itera=5, tolarance=1,)
     MS.fit_x(x)
     MS.cluster()
     print(MS.x_)
