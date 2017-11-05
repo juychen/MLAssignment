@@ -17,10 +17,8 @@ OUTPATH = os.path.join('PA-2', 'data', 'processed')
 
 DATA = os.listdir(IMGPATH)
 
-METHODS = ['KM', 'EMGMM', 'WKM', 'GMS', 'WGMS']
-K = [2, 5, 10, 50]
-Lambda = [0.1, 0.5, 2, 5, 10]
-
+METHODS = ['GMS', 'WGMS']
+BANDS = [1, 2, 5, 7, 10]
 
 def main():
     exp_dict = {}
@@ -36,37 +34,34 @@ def main():
 
         exp_dict[(data, 'X')] = X
 
-        for method in METHODS[:2]:
-            for k in K:
-                if(method == 'KM'):
-                    clf = im.Kmeans(k=k)
-                if(method == 'EMGMM'):
-                    clf = im.EMGMM(k=k)
-                clf.fit_x(X)
-                clf.cluster()
-                exp_dict[(data, method, k)] = clf
+        for bd in BANDS:
 
-                Y = clf.get_result() + 1
-                segm = pa2.labels2seg(Y, L)
-                pl.subplot(1, 3, 2)
-                pl.imshow(segm)
-                csegm = pa2.colorsegms(segm, img)
-                pl.subplot(1, 3, 3)
-                pl.imshow(csegm)
-                pl.savefig(os.path.join(OUTPATH, data + '_' +
-                                        method + '_' + str(k) + '_processed.jpg'))
-                pl.show()
+            clf = im.GaussianMeanShift(itera=5,bandwidth=bd)
+     
+            clf.fit_x(X)
+            clf.cluster()
+            exp_dict[(data, 'MS', bd)] = clf
+
+            Y = clf.get_result() + 1
+            segm = pa2.labels2seg(Y, L)
+            pl.subplot(1, 3, 2)
+            pl.imshow(segm)
+            csegm = pa2.colorsegms(segm, img)
+            pl.subplot(1, 3, 3)
+            pl.imshow(csegm)
+            pl.savefig(os.path.join(OUTPATH, data + '_GMS_' + str(bd) + '_processed.jpg'))
+            pl.show()
 
     for data in DATA:
 
         X = exp_dict[(data, 'X')]
 
-        for l in Lambda:
-            for k in K:
-                WKM = im.WeightedKmeans4D(k=k, Lambda=l)
+        for bdp in BANDS:
+            for bdc in BANDS:
+                WKM = im.WeightGMeanshift(itera=5,chrominance_bandwidth=bdp,location_bandwidth=bdc)
                 WKM.fit_x(X)
                 WKM.cluster()
-                exp_dict[(data, 'WKM', k, l)] = WKM
+                exp_dict[(data, 'WGMS', bdp, bdc)] = WKM
                 Y = WKM.get_result() + 1
                 segm = pa2.labels2seg(Y, L)
                 pl.subplot(1, 3, 2)
@@ -74,7 +69,8 @@ def main():
                 csegm = pa2.colorsegms(segm, img)
                 pl.subplot(1, 3, 3)
                 pl.imshow(csegm)
-                pl.savefig(os.path.join(OUTPATH, data + '_WKM_' + str(k) + '_' + str(l) + '_processed.jpg'))
+                pl.savefig(os.path.join(OUTPATH, data + '_WGMS_' +
+                                        str(bdp) + '_' + str(bdc) + '_processed.jpg'))
                 pl.show()
 
         # KM = im.WeightGMeanshift(chrominance_bandwidth=4,location_bandwidth=10,itera=5)
