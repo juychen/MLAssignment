@@ -34,7 +34,7 @@ def main():
         #     'PA-2', 'data', 'cluster_data_data' + data + '_X.txt')).T
         exp_dict[(data, 'X')] = X
 
-        KM = im.WeightGMeanshift(chrominance_bandwidth=4,location_bandwidth=5,itera=5)
+        KM = im.WeightGMeanshift(chrominance_bandwidth=4,location_bandwidth=10,itera=5)
         KM.fit_x(X)
         KM.cluster()
         exp_dict[(data, 'KM')] = KM
