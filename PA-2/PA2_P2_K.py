@@ -74,7 +74,7 @@ def main():
                 csegm = pa2.colorsegms(segm, img)
                 pl.subplot(1, 3, 3)
                 pl.imshow(csegm)
-                pl.savefig(os.path.join(OUTPATH, data + '_WKM_' + str(k) + '_' + l + '_processed.jpg'))
+                pl.savefig(os.path.join(OUTPATH, data + '_WKM_' + str(k) + '_' + str(l) + '_processed.jpg'))
                 pl.show()
 
         # KM = im.WeightGMeanshift(chrominance_bandwidth=4,location_bandwidth=10,itera=5)
