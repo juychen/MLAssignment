@@ -413,6 +413,36 @@ class WeightGMeanshift(GaussianMeanShift):
         if(self.kernel == 'weighted_gaussian'):
 
             chdim = int((self.d) / 2)
+            # this method change the covariance to a non isotropic one 
+            # by modifieng the cov matrix
+            # 2 times faster than multipy two gaussians.
+            dia_sqrhp = np.ones(chdim) * ((self.h) ** 2)
+            dia_sqrhc = np.ones(chdim) * ((self.hc) ** 2)
+
+            dia_cov = np.concatenate((dia_sqrhp,dia_sqrhc))
+
+            cov =  np.diag(dia_cov)
+
+            covh = np.array([cov for i in range(0, self.N)])
+
+            # return the probabilty of each x, dim = N * N
+            # sample gaussian outputs a martix of probability of each components of all samples dim =  N (samples) * N (components)
+            # compare with multipying two gaussian , denominator need to multipied sqrt(2 * pi)
+
+            sample_gaussians = get_mixture_Gaussian_pdf(
+                self.x, self.x_, covh)
+
+            sample_gaussians = sample_gaussians / (m.sqrt(2*m.pi))
+
+            x_numerator = np.dot(sample_gaussians.T, self.x)
+            x_denominator = np.sum(sample_gaussians, axis=0)
+            x = (x_numerator.T / x_denominator).T
+
+            return x
+
+        if(self.kernel == 'weighted_gaussian_v2'):
+
+            chdim = int((self.d) / 2)
             # chrominance dimsion is dim 0 and dim 1,
             # cordinate dimension is dim 2 and dim 3
 
@@ -456,7 +486,8 @@ def main():
     # print(GMM.miu)
     # print(GMM.SIGMA)
 
-    MS = WeightGMeanshift(chrominance_bandwidth=3,location_bandwidth=5, itera=5, tolarance=1,)
+    MS = WeightGMeanshift(chrominance_bandwidth=3,
+                          location_bandwidth=5, itera=5, tolarance=1,kernel='weighted_gaussian')
     MS.fit_x(x)
     MS.cluster()
     print(MS.x_)
