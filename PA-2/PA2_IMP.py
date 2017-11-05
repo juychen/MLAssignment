@@ -155,10 +155,12 @@ class WeightedKmeans4D(Kmeans):
             print('it is not a 4 - dimensional data clustering')
             return
 
+        chdim = int((self.d) / 2)
+
         minus = a - b
 
-        left = np.square(np.linalg.norm(minus[:, :2], axis=1))
-        right = np.square(np.linalg.norm(minus[:, 2:], axis=1))
+        left = np.square(np.linalg.norm(minus[:, :chdim], axis=1))
+        right = np.square(np.linalg.norm(minus[:, chdim:], axis=1))
 
         return left + self.Lambda * right
 
@@ -441,9 +443,9 @@ def main():
 
     KM = WeightedKmeans4D(k=2, itera=100)
     x = np.array([[1, 1, 2, 2], [9, 7, 15, 15], [1, 2, 3, 4]])
-    # KM.fit_x(x)
-    # KM.cluster()
-    # print(KM.z)
+    KM.fit_x(x)
+    KM.cluster()
+    print(KM.get_result())
 
     # GMM = EMGMM(k=3, itera=100)
     #x = np.array([[1, 1], [2, 2], [9, 7], [15, 15], [105, 5]])
