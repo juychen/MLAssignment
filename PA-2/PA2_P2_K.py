@@ -59,8 +59,15 @@ def main():
 
     for data in DATA:
 
-        X = exp_dict[(data, 'X')]
+        img = Image.open(os.path.join(IMGPATH, data))
+        pl.subplot(1, 3, 1)
+        pl.imshow(img)
 
+        X_raw, L = pa2.getfeatures(img, 7)
+        X = vq.whiten(X_raw.T)
+
+        exp_dict[(data, 'X')] = X
+        
         for l in Lambda:
             for k in K:
                 WKM = im.WeightedKmeans4D(k=k, Lambda=l)
