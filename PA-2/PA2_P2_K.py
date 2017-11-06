@@ -34,8 +34,6 @@ def main():
         X_raw, L = pa2.getfeatures(img, 7)
         X = vq.whiten(X_raw.T)
 
-        exp_dict[(data, 'X')] = X
-
         for method in METHODS[:2]:
             for k in K:
                 if(method == 'KM'):
@@ -44,7 +42,6 @@ def main():
                     clf = im.EMGMM(k=k)
                 clf.fit_x(X)
                 clf.cluster()
-                exp_dict[(data, method, k)] = clf
 
                 Y = clf.get_result() + 1
                 segm = pa2.labels2seg(Y, L)
@@ -65,15 +62,12 @@ def main():
 
         X_raw, L = pa2.getfeatures(img, 7)
         X = vq.whiten(X_raw.T)
-
-        exp_dict[(data2, 'X')] = X
         
         for l in Lambda:
             for k in K:
                 WKM = im.WeightedKmeans4D(k=k, Lambda=l)
                 WKM.fit_x(X)
                 WKM.cluster()
-                exp_dict[(data, 'WKM', k, l)] = WKM
                 Y = WKM.get_result() + 1
                 segm = pa2.labels2seg(Y, L)
                 pl.subplot(1, 3, 2)
