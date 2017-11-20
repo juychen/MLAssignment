@@ -11,8 +11,24 @@ import matplotlib.pyplot as plt
 
 NAME_MAP = imp.NAME_MAP
 
+def transform_x(x):
+    res_dim = (x.shape[1],int((x.shape[0]+1)*(x.shape[0])/2))
+    result = np.array([])
+    for item in x.T:
+        item_T =  item.reshape(-1,1)
+        item_outer_product = np.dot(item_T,item_T.T)
+        item_upper_diag = item_outer_product[np.triu_indices(item_outer_product.shape[0])]
+        result = np.append(result, item_upper_diag)
+    
+    result = result.reshape(res_dim)
+
+    return result.T
+
 def main():
     testx,testy,trainx,trainy = imp.load_dataset_P2()
+
+    textx = transform_x(textx)
+    trainx = transform_x(trainx)
 
     nopara_dict={'function':'id','order':1,'Lambda':0}
     lambda_candict = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['id'],'order':[1]}
