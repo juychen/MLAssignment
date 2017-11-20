@@ -12,12 +12,13 @@ import matplotlib.pyplot as plt
 NAME_MAP = imp.NAME_MAP
 
 def transform_x(x):
-    res_dim = (x.shape[1],int((x.shape[0]+1)*(x.shape[0])/2))
+    res_dim = (x.shape[1],int((x.shape[0]+1)*(x.shape[0])/2)+x.shape[0])
     result = np.array([])
     for item in x.T:
         item_T =  item.reshape(-1,1)
         item_outer_product = np.dot(item_T,item_T.T)
         item_upper_diag = item_outer_product[np.triu_indices(item_outer_product.shape[0])]
+        result = np.append(result, item)
         result = np.append(result, item_upper_diag)
     
     result = result.reshape(res_dim)
@@ -44,8 +45,10 @@ def main():
 
     # model selection
 
-    #plt.plot(testy, 'ko',label='True Values')
-    #plt.legend()
+    plt.plot(testy, 'ko',label='True Values')
+    plt.legend()
+
+    print(NAME_MAP)
 
 
     for key, value in NAME_MAP.items():
@@ -69,19 +72,19 @@ def main():
         errors[key]=[mse,mae]
 
         
-        plt.plot(testy, 'ko',label='True Values')
+        #plt.plot(testy, 'ko',label='True Values')
         plt.legend()
         plt.plot(np.round(prediction),'o',label=key)
         plt.legend()
-        plt.savefig(os.path.join('PA-1','plots','cross_fun'+key+'.jpg'))
-        plt.close()
+    plt.savefig(os.path.join('PA-1','plots','cross_fun'+'.jpg'))
+    plt.close()
 
 
 
         #imp.learning_curve(testx,testy,trainx,trainy,paradict=params,subset=[0.2,0.4,0.6,0.8,1],repeat=10,method=key,plot_title='Learning Curve P2 '+value,show_plot=False)
     epd=pd.DataFrame(errors)
     epd.to_csv(os.path.join('PA-1','plots','err_cross.csv'))
-    plt.savefig(os.path.join('PA-1','plots','cross_fun'+'.jpg'))
+    #plt.savefig(os.path.join('PA-1','plots','cross_fun'+'.jpg'))
     
 if __name__ == "__main__":
     main()

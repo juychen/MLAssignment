@@ -1,7 +1,7 @@
 ,mse
-"{'function': 'id', 'order': 1, 'Lambda': 2}",51.858315689238616
-"{'function': 'id', 'order': 1, 'Lambda': 5}",52.05472289071456
-"{'function': 'id', 'order': 1, 'Lambda': 1}",52.904535253465816
-"{'function': 'id', 'order': 1, 'Lambda': 0.5}",54.60509578686404
-"{'function': 'id', 'order': 1, 'Lambda': 0.25}",57.16394216986363
-"{'function': 'id', 'order': 1, 'Lambda': 0.1}",62.68165912384709
+"{'function': 'id', 'order': 1, 'Lambda': 5}",3.501592033833657
+"{'function': 'id', 'order': 1, 'Lambda': 2}",3.5907614445419767
+"{'function': 'id', 'order': 1, 'Lambda': 1}",3.671580433653947
+"{'function': 'id', 'order': 1, 'Lambda': 0.5}",3.7976920205071223
+"{'function': 'id', 'order': 1, 'Lambda': 0.25}",3.9432055045612158
+"{'function': 'id', 'order': 1, 'Lambda': 0.1}",4.061710799879939
