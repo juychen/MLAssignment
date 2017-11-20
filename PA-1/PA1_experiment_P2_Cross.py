@@ -27,8 +27,9 @@ def transform_x(x):
 def main():
     testx,testy,trainx,trainy = imp.load_dataset_P2()
 
-    textx = transform_x(textx)
+    testx = transform_x(testx)
     trainx = transform_x(trainx)
+
 
     nopara_dict={'function':'id','order':1,'Lambda':0}
     lambda_candict = {'Lambda':[0.1,0.25,0.5,1,2,5],'function':['id'],'order':[1]}
@@ -43,21 +44,21 @@ def main():
 
     # model selection
 
-    plt.plot(testy, 'ko',label='True Values')
-    plt.legend()
+    #plt.plot(testy, 'ko',label='True Values')
+    #plt.legend()
 
 
     for key, value in NAME_MAP.items():
 
-        if key=='RR': continue
+        #if key=='RR': continue
         #print (key)
         if (key=='RLS' or key =='LASSO'):
             para_err,opt_para = imp.model_selection(testx,testy,trainx,trainy,lambda_candict,estimator=key)
-            imp.mseMap_toCSV(para_err,'P2_mse_normal'+key+'.csv')
+            imp.mseMap_toCSV(para_err,'P2_mse_cross'+key+'.csv')
             opt_params[key] = opt_para      
         elif(key == 'BR'):
             para_err,opt_para = imp.model_selection(testx,testy,trainx,trainy,BR_candict,estimator=key)
-            imp.mseMap_toCSV(para_err,'P2_mse_normal'+key+'.csv')
+            imp.mseMap_toCSV(para_err,'P2_mse_cross'+key+'.csv')
             opt_params[key] = opt_para 
         
         params = opt_params[key]
@@ -68,8 +69,13 @@ def main():
         errors[key]=[mse,mae]
 
         
-        plt.plot(prediction,'o',label=key)
+        plt.plot(testy, 'ko',label='True Values')
         plt.legend()
+        plt.plot(np.round(prediction),'o',label=key)
+        plt.legend()
+        plt.savefig(os.path.join('PA-1','plots','cross_fun'+key+'.jpg'))
+        plt.close()
+
 
 
         #imp.learning_curve(testx,testy,trainx,trainy,paradict=params,subset=[0.2,0.4,0.6,0.8,1],repeat=10,method=key,plot_title='Learning Curve P2 '+value,show_plot=False)
