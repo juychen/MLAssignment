@@ -18,7 +18,7 @@ OUTPATH = os.path.join('PA-2', 'data', 'processed')
 DATA = os.listdir(IMGPATH)
 
 METHODS = ['GMS', 'WGMS']
-BANDS = [1, 2.5, 3.5, 7, 10]
+BANDS = [ 4.375,  5.25 ,  6.125]
 
 def main():
     exp_dict = {}
