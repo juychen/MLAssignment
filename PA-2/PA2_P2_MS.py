@@ -15,10 +15,11 @@ import scipy.cluster.vq as vq
 IMGPATH = os.path.join('PA-2', 'data', 'images')
 OUTPATH = os.path.join('PA-2', 'data', 'processed')
 
-DATA = os.listdir(IMGPATH)
+#DATA = os.listdir(IMGPATH)
+DATA = ['12003.JPG']
 
 METHODS = ['GMS', 'WGMS']
-BANDS = [ 4.375,  5.25 ,  6.125]
+BANDS = [ 3.75,4]
 
 def main():
     exp_dict = {}
