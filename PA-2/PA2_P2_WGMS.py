@@ -49,9 +49,9 @@ def main():
     #         pl.savefig(os.path.join(OUTPATH, data + '_GMS_' + str(bd) + '_processed.jpg'))
     #         pl.show()
 
-    for data in DATA:
+    for data2 in DATA:
 
-        img = Image.open(os.path.join(IMGPATH, data))
+        img = Image.open(os.path.join(IMGPATH, data2))
         pl.subplot(1, 3, 1)
         pl.imshow(img)
 
@@ -70,7 +70,7 @@ def main():
                 csegm = pa2.colorsegms(segm, img)
                 pl.subplot(1, 3, 3)
                 pl.imshow(csegm)
-                pl.savefig(os.path.join(OUTPATH, data + '_WGMS_' +
+                pl.savefig(os.path.join(OUTPATH, data2 + '_WGMS_' +
                                         str(bdp) + '_' + str(bdc) + '_processed.jpg'))
                 pl.show()
     return
