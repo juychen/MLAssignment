@@ -86,7 +86,8 @@ class Kmeans(ClusterAlgorithm):
             return
         else:
             self.miu = resample(self.x, n_samples=self.K,
-                                replace=False, random_state=self.K)
+                                replace=False, random_state=self.K
+                                )
             return
 
     def fit_x(self, x, pick=[]):
