@@ -23,32 +23,6 @@ BANDS = [ 3,4, 5 ,6,7]
 def main():
     exp_dict = {}
 
-    # for data in DATA:
-
-    #     img = Image.open(os.path.join(IMGPATH, data))
-    #     pl.subplot(1, 3, 1)
-    #     pl.imshow(img)
-
-    #     X_raw, L = pa2.getfeatures(img, 7)
-    #     X = vq.whiten(X_raw.T)
-
-    #     for bd in BANDS:
-
-    #         clf = im.GaussianMeanShift(itera=5,bandwidth=bd)
-     
-    #         clf.fit_x(X)
-    #         clf.cluster()
-
-    #         Y = clf.get_result() + 1
-    #         segm = pa2.labels2seg(Y, L)
-    #         pl.subplot(1, 3, 2)
-    #         pl.imshow(segm)
-    #         csegm = pa2.colorsegms(segm, img)
-    #         pl.subplot(1, 3, 3)
-    #         pl.imshow(csegm)
-    #         pl.savefig(os.path.join(OUTPATH, data + '_GMS_' + str(bd) + '_processed.jpg'))
-    #         pl.show()
-
     for data2 in DATA:
 
         img = Image.open(os.path.join(IMGPATH, data2))

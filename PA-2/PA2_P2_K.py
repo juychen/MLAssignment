@@ -25,34 +25,34 @@ Lambda = [0.1, 0.5, 2, 5, 10]
 def main():
     exp_dict = {}
 
-    # for data in DATA:
+    for data in DATA:
 
-    #     img = Image.open(os.path.join(IMGPATH, data))
-    #     pl.subplot(1, 3, 1)
-    #     pl.imshow(img)
+        img = Image.open(os.path.join(IMGPATH, data))
+        pl.subplot(1, 3, 1)
+        pl.imshow(img)
 
-    #     X_raw, L = pa2.getfeatures(img, 7)
-    #     X = vq.whiten(X_raw.T)
+        X_raw, L = pa2.getfeatures(img, 7)
+        X = vq.whiten(X_raw.T)
 
-    #     for method in METHODS[:2]:
-    #         for k in K:
-    #             if(method == 'KM'):
-    #                 clf = im.Kmeans(k=k)
-    #             if(method == 'EMGMM'):
-    #                 clf = im.EMGMM(k=k)
-    #             clf.fit_x(X)
-    #             clf.cluster()
+        for method in METHODS[:2]:
+            for k in K:
+                if(method == 'KM'):
+                    clf = im.Kmeans(k=k)
+                if(method == 'EMGMM'):
+                    clf = im.EMGMM(k=k)
+                clf.fit_x(X)
+                clf.cluster()
 
-    #             Y = clf.get_result() + 1
-    #             segm = pa2.labels2seg(Y, L)
-    #             pl.subplot(1, 3, 2)
-    #             pl.imshow(segm)
-    #             csegm = pa2.colorsegms(segm, img)
-    #             pl.subplot(1, 3, 3)
-    #             pl.imshow(csegm)
-    #             pl.savefig(os.path.join(OUTPATH, data + '_' +
-    #                                     method + '_' + str(k) + '_processed.jpg'))
-    #             pl.show()
+                Y = clf.get_result() + 1
+                segm = pa2.labels2seg(Y, L)
+                pl.subplot(1, 3, 2)
+                pl.imshow(segm)
+                csegm = pa2.colorsegms(segm, img)
+                pl.subplot(1, 3, 3)
+                pl.imshow(csegm)
+                pl.savefig(os.path.join(OUTPATH, data + '_' +
+                                        method + '_' + str(k) + '_processed.jpg'))
+                pl.show()
 
     for data2 in DATA:
 
@@ -77,32 +77,6 @@ def main():
                 pl.imshow(csegm)
                 pl.savefig(os.path.join(OUTPATH, data2 + '_WKM_' + str(k) + '_' + str(l) + '_processed.jpg'))
                 pl.show()
-
-        # KM = im.WeightGMeanshift(chrominance_bandwidth=4,location_bandwidth=10,itera=5)
-        # KM.fit_x(X)
-        # KM.cluster()
-        # exp_dict[(data, 'KM')] = KM
-
-        # np.savetxt(os.path.join(OUTPATH,data+'_meansh.txt'),KM.x_)
-
-        # Y = KM.get_result() + 1
-        # #C = KM.miu
-        # print(np.unique(Y))
-
-        # GMM = im.EMGMM(k=4)
-        # # GMM.fit_x(X)
-        # # GMM.cluster()
-        # # exp_dict[(data, 'GMM')] = GMM
-        # segm = pa2.labels2seg(Y,L)
-        # pl.subplot(1,3,2)
-        # pl.imshow(segm)
-
-        # # color the segmentation image
-        # csegm = pa2.colorsegms(segm, img)
-        # pl.subplot(1,3,3)
-        # pl.imshow(csegm)
-        # pl.savefig(os.path.join(OUTPATH,data+'_processed.jpg'))
-        # pl.show()
 
     return
 
